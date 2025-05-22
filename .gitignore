@@ -1,0 +1,6 @@
+genpkgcon/
+lfs-currency/
+*.swp
+*.o
+*.a
+*.so
