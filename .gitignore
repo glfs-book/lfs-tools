@@ -1,5 +1,6 @@
 genpkgcon/
 lfs-currency/
+docstubgen/obj/
 *.swp
 *.o
 *.a
