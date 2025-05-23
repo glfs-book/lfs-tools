@@ -86,8 +86,10 @@ def parsexml(line):
 
 	# seal331 22/05/2025 21:50 MSK: LFS-QOL intentionally ships an older
 	# version of openjdk for compatibility with old Minecraft
+	# seal331 23/05/2025 4:39 MSK: and more Java stuff got added...
 	if ('openjdk-major' == pkgname) or ('openjdk' == pkgname) or \
-			('openjdk-build' == pkgname):
+			('openjdk-build' == pkgname) or ('java-major' == pkgname) or \
+			('java' == pkgname) or ('java-build' == pkgname):
 		return False
 
 	# seal331 22/05/2025 21:56 MSK: rofi-wayland is tied to upstream
@@ -164,8 +166,10 @@ def parsexml(line):
 
 	# seal331 23/05/2025 1:23 MSK: dolphin has a different name on
 	# Repology's side
+	# seal331 23/05/2025 4:45 MSK: and it's also not up to date in Arch
 	if ('dolphin' == pkgname):
 		pkgname = 'dolphin-emu'
+		repo = 'fedora_rawhide'
 
 	# seal331 23/05/2025 1:28 MSK: prismlauncher has a different name on
 	# Repology's side and is not in Arch's official repos
