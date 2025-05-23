@@ -51,7 +51,7 @@ nvcmp -c lfsqol.toml
 if [ -f ./gitcheck-upd.txt ]; then
 	cat gitcheck-upd.txt
 fi
-if [ -f ./idle-update ]; then
+if [ -f ./idle-update.txt ]; then
         cat idle-update.txt
 fi
 echo "Please manually check for OpenJDK updates."
