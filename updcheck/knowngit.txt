@@ -1,0 +1,8 @@
+jstest-sdl https://github.com/meleu/jstest-sdl
+heirloom-doctools https://github.com/n-t-roff/heirloom-doctools 
+pkgsuite https://github.com/mamccollum/pkgsuite
+heirloom-ex-vi https://github.com/n-t-roff/heirloom-ex-vi
+freebee https://github.com/philpem/freebee
+s4-3b1-pc7300 https://github.com/dgesswein/s4-3b1-pc7300
+p20-emu https://github.com/Spritetm/plexus_20_emu
+mgba https://github.com/mgba-emu/mgba

@@ -1,0 +1,435 @@
+[__config__]
+oldver = "versions_book.json"
+newver = "versions_current.json"
+max_concurrency = 1
+
+[asio]
+source = "repology"
+repology = "asio"
+repo = "arch"
+
+[enet]
+source = "repology"
+repology = "enet"
+repo = "arch"
+
+[glaze]
+source = "repology"
+repology = "glaze"
+repo = "arch"
+
+[jansson]
+source = "repology"
+repology = "jansson"
+repo = "arch"
+
+[libev]
+source = "repology"
+repology = "libev"
+repo = "arch"
+
+[libjuice]
+source = "repology"
+repology = "libjuice"
+repo = "arch"
+
+[libsrtp]
+source = "repology"
+repology = "libsrtp"
+repo = "arch"
+
+[libdatachannel]
+source = "repology"
+repology = "libdatachannel"
+repo = "arch"
+
+[libutempter]
+source = "repology"
+repology = "libutempter"
+repo = "arch"
+
+[libzip]
+source = "repology"
+repology = "libzip"
+repo = "arch"
+
+[mbedtls]
+source = "repology"
+repology = "mbedtls"
+repo = "arch"
+
+[zlib]
+source = "repology"
+repology = "zlib"
+repo = "arch"
+
+[nlohmann-json]
+source = "repology"
+repology = "nlohmann-json"
+repo = "arch"
+
+[pugixml]
+source = "repology"
+repology = "pugixml"
+repo = "arch"
+
+[re2]
+source = "repology"
+repology = "re2"
+repo = "nix_unstable"
+
+[qrcodegencpp]
+source = "repology"
+repology = "qrcodegencpp"
+repo = "nix_unstable"
+
+[sdbus-cpp]
+source = "repology"
+repology = "sdbus-cpp"
+repo = "arch"
+
+[sdl2-net]
+source = "repology"
+repology = "sdl2-net"
+repo = "arch"
+
+[tllist]
+source = "repology"
+repology = "tllist"
+repo = "arch"
+
+[tomlplusplus]
+source = "repology"
+repology = "tomlplusplus"
+repo = "arch"
+
+[uthash]
+source = "repology"
+repology = "uthash"
+repo = "arch"
+
+[websocketpp]
+source = "repology"
+repology = "websocketpp"
+repo = "arch"
+
+[yajl]
+source = "repology"
+repology = "yajl"
+repo = "arch"
+
+[fcft]
+source = "repology"
+repology = "fcft"
+repo = "arch"
+
+[glu]
+source = "repology"
+repology = "glu"
+repo = "arch"
+
+[libliftoff]
+source = "repology"
+repology = "libliftoff"
+repo = "arch"
+
+[libspng]
+source = "repology"
+repology = "libspng"
+repo = "arch"
+
+[nv-codec-headers]
+source = "repology"
+repology = "nv-codec-headers"
+repo = "arch"
+
+[xdg-desktop-portal-hyprland]
+source = "repology"
+repology = "xdg-desktop-portal-hyprland"
+repo = "arch"
+
+[xdg-desktop-portal-wlr]
+source = "repology"
+repology = "xdg-desktop-portal-wlr"
+repo = "arch"
+
+[htop]
+source = "repology"
+repology = "htop"
+repo = "arch"
+
+[btop]
+source = "repology"
+repology = "btop"
+repo = "arch"
+
+[lotus123]
+source = "repology"
+repology = "lotus123"
+repo = "slackbuilds"
+
+[lrzsz]
+source = "repology"
+repology = "lrzsz"
+repo = "arch"
+
+[minicom]
+source = "repology"
+repology = "minicom"
+repo = "arch"
+
+[ncompress]
+source = "repology"
+repology = "ncompress"
+repo = "arch"
+
+[neofetch]
+source = "repology"
+repology = "neofetch"
+repo = "alpine_edge"
+
+[fastfetch]
+source = "repology"
+repology = "fastfetch"
+repo = "arch"
+
+[obs-studio]
+source = "repology"
+repology = "obs-studio"
+repo = "arch"
+
+[rpmextract]
+source = "repology"
+repology = "rpmextract"
+repo = "arch"
+
+[scdoc]
+source = "repology"
+repology = "scdoc"
+repo = "arch"
+
+[tmux]
+source = "repology"
+repology = "tmux"
+repo = "debian_unstable"
+
+[wbg]
+source = "repology"
+repology = "wbg"
+repo = "opensuse_tumbleweed"
+
+[dunst]
+source = "repology"
+repology = "dunst"
+repo = "arch"
+
+[eza]
+source = "repology"
+repology = "eza"
+repo = "arch"
+
+[befunge93]
+source = "repology"
+repology = "befunge93"
+repo = "homebrew"
+
+[byacc]
+source = "repology"
+repology = "byacc"
+repo = "arch"
+
+[cuda]
+source = "repology"
+repology = "cuda"
+repo = "arch"
+
+[gcc]
+source = "repology"
+repology = "gcc"
+repo = "arch"
+
+[intercal]
+source = "repology"
+repology = "intercal"
+repo = "freebsd"
+
+[strace]
+source = "repology"
+repology = "strace"
+repo = "arch"
+
+[socat]
+source = "repology"
+repology = "socat"
+repo = "arch"
+
+[ksh]
+source = "repology"
+repology = "ksh"
+repo = "fedora_rawhide"
+
+[xcb-util-xrm]
+source = "repology"
+repology = "xcb-util-xrm"
+repo = "arch"
+
+[printproto]
+source = "repology"
+repology = "printproto"
+repo = "opensuse_tumbleweed"
+
+[libxp]
+source = "repology"
+repology = "libxp"
+repo = "arch"
+
+[motif]
+source = "repology"
+repology = "motif"
+repo = "arch"
+
+[alacritty]
+source = "repology"
+repology = "alacritty"
+repo = "arch"
+
+[foot]
+source = "repology"
+repology = "foot"
+repo = "arch"
+
+[rofi]
+source = "repology"
+repology = "rofi"
+repo = "arch"
+
+[wofi]
+source = "repology"
+repology = "wofi"
+repo = "arch"
+
+[heirloom-ng]
+source = "github"
+github = "Projeto-Pindorama/heirloom-ng"
+use_latest_release = true
+
+[schilytools]
+source = "repology"
+repology = "schilytools"
+repo = "opensuse_tumbleweed"
+
+[heirloom-sh]
+source = "repology"
+repology = "heirloom-sh"
+repo = "gentoo"
+
+[heirloom-devtools]
+source = "repology"
+repology = "heirloom-devtools"
+repo = "adelie_current"
+
+[s-nail]
+source = "repology"
+repology = "s-nail"
+repo = "arch"
+
+[ostree]
+source = "repology"
+repology = "ostree"
+repo = "arch"
+
+[flatpak]
+source = "repology"
+repology = "flatpak"
+repo = "arch"
+
+[cdesktopenv]
+source = "repology"
+repology = "cdesktopenv"
+repo = "pkgsrc_current"
+
+[hyprland-protocols]
+source = "repology"
+repology = "hyprland-protocols"
+repo = "arch"
+
+[hyprutils]
+source = "repology"
+repology = "hyprutils"
+repo = "arch"
+
+[hyprlang]
+source = "repology"
+repology = "hyprlang"
+repo = "arch"
+
+[hyprcursor]
+source = "repology"
+repology = "hyprcursor"
+repo = "arch"
+
+[hyprwayland-scanner]
+source = "repology"
+repology = "hyprwayland-scanner"
+repo = "arch"
+
+[aquamarine-rendering-backend]
+source = "repology"
+repology = "aquamarine-rendering-backend"
+repo = "arch"
+
+[hyprgraphics]
+source = "repology"
+repology = "hyprgraphics"
+repo = "arch"
+
+[hyprland-qt-support]
+source = "repology"
+repology = "hyprland-qt-support"
+repo = "arch"
+
+[hyprland-qtutils]
+source = "repology"
+repology = "hyprland-qtutils"
+repo = "arch"
+
+[hyprland]
+source = "repology"
+repology = "hyprland"
+repo = "arch"
+
+[i3]
+source = "repology"
+repology = "i3"
+repo = "arch"
+
+[wayfire]
+source = "repology"
+repology = "wayfire"
+repo = "debian_unstable"
+
+[gkermit]
+source = "repology"
+repology = "gkermit"
+repo = "debian_unstable"
+
+[melonds]
+source = "repology"
+repology = "melonds"
+repo = "opensuse_tumbleweed"
+
+[dolphin-emu]
+source = "repology"
+repology = "dolphin-emu"
+repo = "arch"
+
+[mupen64plus]
+source = "repology"
+repology = "mupen64plus"
+repo = "arch"
+
+[prismlauncher]
+source = "repology"
+repology = "prismlauncher"
+repo = "alpine_edge"
+
