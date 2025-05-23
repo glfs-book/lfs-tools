@@ -3,7 +3,7 @@
 # packagesent2toml - seal's stupid packages.ent to nvchecker toml converter
 # (C) Seal Sealy, 2025
 
-MAINTAINER_MODE = 1
+MAINTAINER_MODE = 0
 
 import os
 import sys
