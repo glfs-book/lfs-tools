@@ -12,7 +12,7 @@ the following:
 wget https://github.com/lilydjwg/nvchecker/archive/refs/tags/v2.17.tar.gz
 tar zxvf v2.17.tar.gz
 cd nvchecker-2.17
-patch -Np1 ../nvchecker.diff
+patch -Np1 -i ../nvchecker.diff
 pip3 install .
 cd ..
 ```
@@ -22,4 +22,4 @@ of) and optionally depends on Subversion (to check for updates to idle).
 
 ## Running
 
-Just run ``check.sh``.
+Just run ``check.sh`` on the LFS-QOL packages.ent file.
