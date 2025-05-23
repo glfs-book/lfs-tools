@@ -54,5 +54,6 @@ fi
 if [ -f ./idle-update ]; then
         cat idle-update.txt
 fi
+echo "Please manually check for OpenJDK updates."
 echo "Stage 5 done."
 echo "Script done."

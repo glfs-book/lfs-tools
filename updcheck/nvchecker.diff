@@ -1,0 +1,16 @@
+--- nvchecker/nvchecker_source/repology.py	2025-05-23 04:10:15.056871186 +0300
++++ nvchecker/nvchecker_source/repology.py	2025-05-23 00:40:53.794816386 +0300
+@@ -2,10 +2,13 @@
+ # Copyright (c) 2019 lilydjwg <lilydjwg@gmail.com>, et al.
+ 
+ from nvchecker.api import RichResult, GetVersionError
++import time
+ 
+ API_URL = 'https://repology.org/api/v1/project/{}'
+ 
+ async def get_version(name, conf, *, cache, **kwargs):
++  time.sleep(2.5)
++
+   project = conf.get('repology') or name
+   repo = conf.get('repo')
+   subrepo = conf.get('subrepo')

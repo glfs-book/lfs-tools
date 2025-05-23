@@ -1,6 +1,10 @@
 genpkgcon/
 lfs-currency/
 docstubgen/obj/
+updcheck/versions_book.json~
+updcheck/gitcheck-upd.txt
+updcheck/versions_current.json
+updcheck/idle-update.txt
 *.swp
 *.o
 *.a
