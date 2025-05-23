@@ -45,7 +45,6 @@ else
 	fi
 	echo "Stage 4 completed successfully."
 fi
-rm -f idle-currentver
 
 echo "Stage 5 - collecting results"
 nvcmp -c lfsqol.toml
