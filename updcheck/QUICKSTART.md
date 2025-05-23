@@ -23,3 +23,7 @@ of) and optionally depends on Subversion (to check for updates to idle).
 ## Running
 
 Just run ``check.sh`` on the LFS-QOL packages.ent file.
+
+## Quirks
+
+When rofi is updated, it's implied that rofi-wayland needs to be updated as well.
