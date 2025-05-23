@@ -14,10 +14,13 @@
       "version": "2.25"
     },
     "btop": {
-      "version": "1.4.0"
+      "version": "1.4.3"
     },
     "byacc": {
       "version": "20241231"
+    },
+    "cava": {
+      "version": "0.10.4"
     },
     "cdesktopenv": {
       "version": "2.5.2"
@@ -26,7 +29,7 @@
       "version": "12.8.1"
     },
     "dolphin-emu": {
-      "version": "2503"
+      "version": "2503a"
     },
     "dunst": {
       "version": "1.12.2"
@@ -38,7 +41,7 @@
       "version": "0.21.1"
     },
     "fastfetch": {
-      "version": "2.40.4"
+      "version": "2.42.0"
     },
     "fcft": {
       "version": "3.3.1"
@@ -80,7 +83,7 @@
       "version": "0.1.3"
     },
     "hyprland": {
-      "version": "0.48.1"
+      "version": "0.49.0"
     },
     "hyprland-protocols": {
       "version": "0.6.4"
@@ -89,13 +92,13 @@
       "version": "0.1.0"
     },
     "hyprland-qtutils": {
-      "version": "0.1.3"
+      "version": "0.1.4"
     },
     "hyprlang": {
-      "version": "0.6.1"
+      "version": "0.6.3"
     },
     "hyprutils": {
-      "version": "0.6.0"
+      "version": "0.7.1"
     },
     "hyprwayland-scanner": {
       "version": "0.4.4"
@@ -103,11 +106,23 @@
     "i3": {
       "version": "4.24"
     },
+    "iniparser": {
+      "version": "4.2.6"
+    },
     "intercal": {
       "version": "0.33"
     },
     "jansson": {
       "version": "2.14.1"
+    },
+    "java": {
+      "version": ""
+    },
+    "java-build": {
+      "version": "5"
+    },
+    "java-major": {
+      "version": "17"
     },
     "ksh": {
       "version": "1.0.10"
@@ -252,6 +267,9 @@
     },
     "xdg-desktop-portal-wlr": {
       "version": "0.7.1"
+    },
+    "xeyes": {
+      "version": "1.3.0"
     },
     "yajl": {
       "version": "2.1.0"

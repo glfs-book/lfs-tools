@@ -18,9 +18,9 @@ source = "repology"
 repology = "glaze"
 repo = "arch"
 
-[jansson]
+[iniparser]
 source = "repology"
-repology = "jansson"
+repology = "iniparser"
 repo = "arch"
 
 [libev]
@@ -153,6 +153,11 @@ source = "repology"
 repology = "xdg-desktop-portal-wlr"
 repo = "arch"
 
+[cava]
+source = "repology"
+repology = "cava"
+repo = "arch"
+
 [htop]
 source = "repology"
 repology = "htop"
@@ -268,11 +273,6 @@ source = "repology"
 repology = "ksh"
 repo = "fedora_rawhide"
 
-[xcb-util-xrm]
-source = "repology"
-repology = "xcb-util-xrm"
-repo = "arch"
-
 [printproto]
 source = "repology"
 repology = "printproto"
@@ -286,6 +286,16 @@ repo = "arch"
 [motif]
 source = "repology"
 repology = "motif"
+repo = "arch"
+
+[xcb-util-xrm]
+source = "repology"
+repology = "xcb-util-xrm"
+repo = "arch"
+
+[xeyes]
+source = "repology"
+repology = "xeyes"
 repo = "arch"
 
 [alacritty]
@@ -421,7 +431,7 @@ repo = "opensuse_tumbleweed"
 [dolphin-emu]
 source = "repology"
 repology = "dolphin-emu"
-repo = "arch"
+repo = "fedora_rawhide"
 
 [mupen64plus]
 source = "repology"
