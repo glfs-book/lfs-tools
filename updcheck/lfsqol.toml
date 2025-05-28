@@ -128,6 +128,11 @@ source = "repology"
 repology = "glu"
 repo = "arch"
 
+[libdecor]
+source = "repology"
+repology = "libdecor"
+repo = "arch"
+
 [libliftoff]
 source = "repology"
 repology = "libliftoff"
@@ -168,6 +173,11 @@ source = "repology"
 repology = "btop"
 repo = "arch"
 
+[inxi]
+source = "repology"
+repology = "inxi"
+repo = "debian_unstable"
+
 [lotus123]
 source = "repology"
 repology = "lotus123"
@@ -181,6 +191,11 @@ repo = "arch"
 [minicom]
 source = "repology"
 repology = "minicom"
+repo = "arch"
+
+[mesa-demos]
+source = "repology"
+repology = "mesa-demos"
 repo = "arch"
 
 [ncompress]
@@ -223,6 +238,11 @@ source = "repology"
 repology = "wbg"
 repo = "opensuse_tumbleweed"
 
+[yt-dlp]
+source = "repology"
+repology = "yt-dlp"
+repo = "arch"
+
 [dunst]
 source = "repology"
 repology = "dunst"
@@ -231,6 +251,11 @@ repo = "arch"
 [eza]
 source = "repology"
 repology = "eza"
+repo = "arch"
+
+[tealdeer]
+source = "repology"
+repology = "tealdeer"
 repo = "arch"
 
 [befunge93]

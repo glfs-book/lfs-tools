@@ -112,23 +112,17 @@
     "intercal": {
       "version": "0.33"
     },
-    "jansson": {
-      "version": "2.14.1"
-    },
-    "java": {
-      "version": ""
-    },
-    "java-build": {
-      "version": "5"
-    },
-    "java-major": {
-      "version": "17"
+    "inxi": {
+      "version": "3.3.38-1"
     },
     "ksh": {
       "version": "1.0.10"
     },
     "libdatachannel": {
       "version": "0.22.6"
+    },
+    "libdecor": {
+      "version": "0.2.3"
     },
     "libev": {
       "version": "4.33"
@@ -165,6 +159,9 @@
     },
     "melonds": {
       "version": "1.0rc"
+    },
+    "mesa-demos": {
+      "version": "9.0.0"
     },
     "minicom": {
       "version": "2.10"
@@ -235,6 +232,9 @@
     "strace": {
       "version": "6.14"
     },
+    "tealdeer": {
+      "version": "1.7.2"
+    },
     "tllist": {
       "version": "1.1.0"
     },
@@ -273,6 +273,9 @@
     },
     "yajl": {
       "version": "2.1.0"
+    },
+    "yt-dlp": {
+      "version": "2025.05.22"
     },
     "zlib": {
       "version": "1.3.1"
