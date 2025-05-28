@@ -275,7 +275,7 @@ use_latest_release = true
 		return False
 	if ('inxi' == pkgname):
 		if TMP_inxi_revision == 'PLCHLDR':
-			print('ERROR: something broke with inxi rev handler')
+			print('ERROR: something broke with inxi rev handler', file=sys.stderr)
 			sys.exit(1)
 		version = version.replace('&inxi-rev;', TMP_inxi_revision)
 		repo = 'debian_unstable'
