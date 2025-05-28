@@ -280,6 +280,10 @@ use_latest_release = true
 		version = version.replace('&inxi-rev;', TMP_inxi_revision)
 		repo = 'debian_unstable'
 
+	# seal331 28/05/2025 14:43 MSK: GCC is checked by the LFS team, not us
+	if ('gcc' == pkgname):
+		return False
+
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
 	# NOT ALWAYS TRUE, KEEP THIS SPECIAL CASE LAST

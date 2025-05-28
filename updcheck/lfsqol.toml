@@ -273,11 +273,6 @@ source = "repology"
 repology = "cuda"
 repo = "arch"
 
-[gcc]
-source = "repology"
-repology = "gcc"
-repo = "arch"
-
 [intercal]
 source = "repology"
 repology = "intercal"

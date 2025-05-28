@@ -52,9 +52,6 @@
     "foot": {
       "version": "1.22.0"
     },
-    "gcc": {
-      "version": "15.1.0"
-    },
     "gkermit": {
       "version": "2.01"
     },
