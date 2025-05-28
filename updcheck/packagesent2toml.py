@@ -10,6 +10,7 @@ import sys
 import tomllib
 
 gitstuff = []
+TMP_inxi_revision = 'PLCHLDR'
 
 def usage():
 	print(f"Usage: {sys.argv[0]} packages.ent", file=sys.stderr)
@@ -27,7 +28,7 @@ if not MAINTAINER_MODE:
 # seal's ad-hoc purpose-built xml parser
 # i'm too stupid to figure out how to use a proper XML parser with this
 def parsexml(line):
-	global gitstuff
+	global gitstuff, TMP_inxi_revision
 	repo = 'arch'
 	# check for comments
 	if not line.startswith("<!ENTITY "):
@@ -262,6 +263,21 @@ use_latest_release = true
 	# between distros, so switch to one that doesn't require us to bother
 	# with changing ours
 	if ('tmux' == pkgname):
+		repo = 'debian_unstable'
+
+	# seal331 28/05/2025 13:29 MSK: inxi version is split across 2
+	# separate entities, this is the exact thing I hoped wouldn't happen...
+	# put a hack here so we can at least attempt to parse it
+	# seal331 28/05/2025 13:37 MSK: and we use a different notation than
+	# some distros, so check a distro with the same notation
+	if ('inxi-rev' == pkgname):
+		TMP_inxi_revision = version
+		return False
+	if ('inxi' == pkgname):
+		if TMP_inxi_revision == 'PLCHLDR':
+			print('ERROR: something broke with inxi rev handler')
+			sys.exit(1)
+		version = version.replace('&inxi-rev;', TMP_inxi_revision)
 		repo = 'debian_unstable'
 
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
