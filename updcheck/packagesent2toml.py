@@ -284,6 +284,20 @@ use_latest_release = true
 	if ('gcc' == pkgname):
 		return False
 
+	# seal331 30/05/2025 22:14 MSK: libutempter-tag is used just so we can
+	# get stuff from GitHub properly
+	if ('libutempter-tag' == pkgname):
+		return False
+
+	# seal331 30/05/2025 22:16 MSK: see LFS-QOL packages.ent comment above
+	# the Rofi entries to see why we need this
+	if ('rofi' == pkgname):
+		return False
+	if ('rofi-full' == pkgname):
+		pkgname = 'rofi'
+		if (version != '1.7.9.1') and MAINTAINER_MODE:
+			print('Maintainer warning: please check if the Rofi hack is still needed', file=sys.stderr)
+
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
 	# NOT ALWAYS TRUE, KEEP THIS SPECIAL CASE LAST
