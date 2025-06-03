@@ -298,6 +298,41 @@ use_latest_release = true
 		if (version != '1.7.9.1') and MAINTAINER_MODE:
 			print('Maintainer warning: please check if the Rofi hack is still needed', file=sys.stderr)
 
+	# seal331 03/06/2025 20:41 MSK: libime-kenlm is a submodule, not a
+        # package itself
+	if ('libime-kenlm' == pkgname):
+		return False
+
+	# seal331 03/06/2025 20:44 MSK: cldr-emoji-annotation-tarball is just
+	# the tarball version
+	if ('cldr-emoji-annotation-tarball' == pkgname):
+		return False
+
+	# seal331 03/06/2025 20:56 MSK: we use a slightly different version
+	# notation than everyone else; and Arch still packages the dead
+	# upstream version which you can't even fetch despite Debian fixing
+	# it up
+	if ('anthy' == pkgname):
+		repo = 'debian_unstable'
+		version = version.split(':')[1]
+		version = version.split('-')[0]
+
+	# seal331 03/06/2025 20:59 MSK: don't bother checking this, there's
+	# a pending TODO to drop this in favor of actual up-to-date Unicode
+	# CLDR, the repo from which we get this is unmaintained and nobody
+	# ships it
+	if ('cldr-emoji-annotation' == pkgname):
+		return False
+
+	# seal331 03/06/2025 21:04 MSK: Repology uses a different name for
+	# this than us
+	if ('m17n' == pkgname):
+		pkgname = 'm17n-lib'
+
+	# seal331 03/06/2025 21:07 MSK: Arch has an outdated version of this
+	if ('m17n-db' == pkgname):
+		repo = 'debian_unstable'
+
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
 	# NOT ALWAYS TRUE, KEEP THIS SPECIAL CASE LAST
