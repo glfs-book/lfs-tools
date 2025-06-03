@@ -3,6 +3,11 @@ oldver = "versions_book.json"
 newver = "versions_current.json"
 max_concurrency = 1
 
+[anthy]
+source = "repology"
+repology = "anthy"
+repo = "debian_unstable"
+
 [asio]
 source = "repology"
 repology = "asio"
@@ -26,6 +31,11 @@ repo = "arch"
 [libev]
 source = "repology"
 repology = "libev"
+repo = "arch"
+
+[libime]
+source = "repology"
+repology = "libime"
 repo = "arch"
 
 [libjuice]
@@ -52,6 +62,16 @@ repo = "arch"
 source = "repology"
 repology = "libzip"
 repo = "arch"
+
+[m17n-lib]
+source = "repology"
+repology = "m17n-lib"
+repo = "arch"
+
+[m17n-db]
+source = "repology"
+repology = "m17n-db"
+repo = "debian_unstable"
 
 [mbedtls]
 source = "repology"
@@ -318,6 +338,11 @@ source = "repology"
 repology = "xeyes"
 repo = "arch"
 
+[xcb-imdkit]
+source = "repology"
+repology = "xcb-imdkit"
+repo = "arch"
+
 [alacritty]
 source = "repology"
 repology = "alacritty"
@@ -336,6 +361,51 @@ repo = "arch"
 [wofi]
 source = "repology"
 repology = "wofi"
+repo = "arch"
+
+[fcitx5]
+source = "repology"
+repology = "fcitx5"
+repo = "arch"
+
+[fcitx5-qt]
+source = "repology"
+repology = "fcitx5-qt"
+repo = "arch"
+
+[fcitx5-gtk]
+source = "repology"
+repology = "fcitx5-gtk"
+repo = "arch"
+
+[fcitx5-lua]
+source = "repology"
+repology = "fcitx5-lua"
+repo = "arch"
+
+[fcitx5-chinese-addons]
+source = "repology"
+repology = "fcitx5-chinese-addons"
+repo = "arch"
+
+[fcitx5-table-extra]
+source = "repology"
+repology = "fcitx5-table-extra"
+repo = "arch"
+
+[fcitx5-anthy]
+source = "repology"
+repology = "fcitx5-anthy"
+repo = "arch"
+
+[fcitx5-m17n]
+source = "repology"
+repology = "fcitx5-m17n"
+repo = "arch"
+
+[fcitx5-configtool]
+source = "repology"
+repology = "fcitx5-configtool"
 repo = "arch"
 
 [heirloom-ng]

@@ -4,6 +4,9 @@
     "alacritty": {
       "version": "0.15.1"
     },
+    "anthy": {
+      "version": "0.4"
+    },
     "aquamarine-rendering-backend": {
       "version": "0.8.0"
     },
@@ -45,6 +48,33 @@
     },
     "fcft": {
       "version": "3.3.1"
+    },
+    "fcitx5": {
+      "version": "5.1.12"
+    },
+    "fcitx5-anthy": {
+      "version": "5.1.6"
+    },
+    "fcitx5-chinese-addons": {
+      "version": "5.1.8"
+    },
+    "fcitx5-configtool": {
+      "version": "5.1.9"
+    },
+    "fcitx5-gtk": {
+      "version": "5.1.3"
+    },
+    "fcitx5-lua": {
+      "version": "5.0.14"
+    },
+    "fcitx5-m17n": {
+      "version": "5.1.3"
+    },
+    "fcitx5-qt": {
+      "version": "5.1.9"
+    },
+    "fcitx5-table-extra": {
+      "version": "5.1.7"
     },
     "flatpak": {
       "version": "1.16.1"
@@ -124,6 +154,9 @@
     "libev": {
       "version": "4.33"
     },
+    "libime": {
+      "version": "1.1.10"
+    },
     "libjuice": {
       "version": "1.6.0"
     },
@@ -150,6 +183,12 @@
     },
     "lrzsz": {
       "version": "0.12.20"
+    },
+    "m17n-db": {
+      "version": "1.8.9"
+    },
+    "m17n-lib": {
+      "version": "1.8.5"
     },
     "mbedtls": {
       "version": "3.6.3"
@@ -255,6 +294,9 @@
     },
     "wofi": {
       "version": "1.4.1"
+    },
+    "xcb-imdkit": {
+      "version": "1.0.9"
     },
     "xcb-util-xrm": {
       "version": "1.3"
