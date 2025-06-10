@@ -88,9 +88,11 @@ def parsexml(line):
 	# seal331 22/05/2025 21:50 MSK: LFS-QOL intentionally ships an older
 	# version of openjdk for compatibility with old Minecraft
 	# seal331 23/05/2025 4:39 MSK: and more Java stuff got added...
+	# seal331 10/06/2025 19:05 MSK: ditto...
 	if ('openjdk-major' == pkgname) or ('openjdk' == pkgname) or \
 			('openjdk-build' == pkgname) or ('java-major' == pkgname) or \
-			('java' == pkgname) or ('java-build' == pkgname):
+			('java' == pkgname) or ('java-build' == pkgname) or \
+			('jdk-modern' == pkgname):
 		return False
 
 	# seal331 22/05/2025 21:56 MSK: rofi-wayland is tied to upstream
@@ -174,7 +176,6 @@ def parsexml(line):
 
 	# seal331 23/05/2025 1:28 MSK: prismlauncher has a different name on
 	# Repology's side and is not in Arch's official repos
-
 	if ('prism-launcher' == pkgname):
 		pkgname = 'prismlauncher'
 		repo = 'alpine_edge'
@@ -333,6 +334,11 @@ use_latest_release = true
 	if ('m17n-db' == pkgname):
 		repo = 'debian_unstable'
 
+	# seal331 10/06/2025 19:15 MSK: Arch doesn't ship OpenTTD betas like we
+	# do
+	if ('openttd' == pkgname):
+		repo = 't2'
+
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
 	# NOT ALWAYS TRUE, KEEP THIS SPECIAL CASE LAST
@@ -341,6 +347,13 @@ use_latest_release = true
 		return False
 
 	# SPECIAL CASING ENDS HERE
+
+	# maintainer note: I like getting the error messages when there's an
+	# unsanitized external entity, despite that executing random
+	# nonexistent commands such as "inxi-version"
+	if not MAINTAINER_MODE:
+		version = version.replace('&', '').replace(';', '')
+
 	return [repo, pkgname, version]
 
 if len(sys.argv) != 2:

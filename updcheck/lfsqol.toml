@@ -93,14 +93,14 @@ source = "repology"
 repology = "pugixml"
 repo = "arch"
 
-[re2]
-source = "repology"
-repology = "re2"
-repo = "nix_unstable"
-
 [qrcodegencpp]
 source = "repology"
 repology = "qrcodegencpp"
+repo = "nix_unstable"
+
+[re2]
+source = "repology"
+repology = "re2"
 repo = "nix_unstable"
 
 [sdbus-cpp]
@@ -111,6 +111,11 @@ repo = "arch"
 [sdl2-net]
 source = "repology"
 repology = "sdl2-net"
+repo = "arch"
+
+[seatd]
+source = "repology"
+repology = "seatd"
 repo = "arch"
 
 [tllist]
@@ -532,4 +537,9 @@ repo = "arch"
 source = "repology"
 repology = "prismlauncher"
 repo = "alpine_edge"
+
+[openttd]
+source = "repology"
+repology = "openttd"
+repo = "t2"
 
