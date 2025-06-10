@@ -174,7 +174,6 @@ def parsexml(line):
 
 	# seal331 23/05/2025 1:28 MSK: prismlauncher has a different name on
 	# Repology's side and is not in Arch's official repos
-
 	if ('prism-launcher' == pkgname):
 		pkgname = 'prismlauncher'
 		repo = 'alpine_edge'
@@ -341,6 +340,13 @@ use_latest_release = true
 		return False
 
 	# SPECIAL CASING ENDS HERE
+
+	# maintainer note: I like getting the error messages when there's an
+	# unsanitized external entity, despite that executing random
+	# nonexistent commands such as "inxi-version"
+	if not MAINTAINER_MODE:
+		version = version.replace('&', '').replace(';', '')
+
 	return [repo, pkgname, version]
 
 if len(sys.argv) != 2:
