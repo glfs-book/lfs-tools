@@ -88,9 +88,11 @@ def parsexml(line):
 	# seal331 22/05/2025 21:50 MSK: LFS-QOL intentionally ships an older
 	# version of openjdk for compatibility with old Minecraft
 	# seal331 23/05/2025 4:39 MSK: and more Java stuff got added...
+	# seal331 10/06/2025 19:05 MSK: ditto...
 	if ('openjdk-major' == pkgname) or ('openjdk' == pkgname) or \
 			('openjdk-build' == pkgname) or ('java-major' == pkgname) or \
-			('java' == pkgname) or ('java-build' == pkgname):
+			('java' == pkgname) or ('java-build' == pkgname) or \
+			('jdk-modern' == pkgname):
 		return False
 
 	# seal331 22/05/2025 21:56 MSK: rofi-wayland is tied to upstream
@@ -331,6 +333,11 @@ use_latest_release = true
 	# seal331 03/06/2025 21:07 MSK: Arch has an outdated version of this
 	if ('m17n-db' == pkgname):
 		repo = 'debian_unstable'
+
+	# seal331 10/06/2025 19:15 MSK: Arch doesn't ship OpenTTD betas like we
+	# do
+	if ('openttd' == pkgname):
+		repo = 't2'
 
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
