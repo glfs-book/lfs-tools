@@ -47,7 +47,7 @@ def callcheckfile(path):
 		path2 = path.translate(dangerouschars)
 		if path != path2:
 			print('Warning: possible ACE attempt detected. CHECK SYSTEM FOR \
-HACKER PRESENCE NOW.')
+HACKER PRESENCE NOW.', file=sys.stderr)
 			sys.exit(1)
 	if os.waitstatus_to_exitcode(os.system(f'{checkfilepath} {os.path.abspath(path)}')) == 0:
 		return 0
