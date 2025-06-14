@@ -339,6 +339,45 @@ use_latest_release = true
 	if ('openttd' == pkgname):
 		repo = 't2'
 
+	# seal331 14/06/2025 14:33 MSK: just ignore all the Python 3 version
+	# stuff, we only need it for file listing
+	if ('python3-major' == pkgname) or ('python3-minor' == pkgname) or \
+			('python3-patch' == pkgname) or ('python3-majorver' == pkgname) \
+			or ('python3' == pkgname) or ('python3-lib-suffix' == \
+			pkgname) or ('python3-site' == pkgname):
+		return False
+
+	# seal331 14/06/2025 14:45 MSK: sxwm is not in Arch's official repos
+	if ('sxwm' == pkgname):
+		repo = 't2'
+
+	# seal331 14/06/2025 14:46 MSK: libtree is not in Arch's official repos
+	# and Repology uses a different name for it
+	if ('libtree' == pkgname):
+		pkgname = 'libtree-ldd'
+		repo = 'debian_unstable'
+
+	# seal331 14/06/2025 14:54 MSK: this is all python modules, and here
+	# it's actually easy to check upstream and not worry with all the
+	# stuff we have to go through to get Repology's checker to work
+	# seal331 14/06/2025 14:58 MSK: NOTE: add ALL new Python modules
+	# here going forwards
+	# seal331 14/06/2025 15:01 MSK: NOTE 2: this requires the packaging
+	# Python module to work, but since that's installed in base LFS it
+	# shouldn't add any complexity to the install instructions for nvchecker
+	# or require adding a new package
+	if ('structlog' == pkgname) or ('platformdirs' == pkgname) or \
+			('pycurl' == pkgname) or ('toml' == pkgname) or \
+			('tornado' == pkgname) or ('nvchecker' == pkgname):
+		print(f'Currently parsing {pkgname}')
+		tomlout.write(f'''[{pkgname}]
+source = "pypi"
+pypi = "{pkgname}"
+
+''')
+		os.system(f'nvtake -c lfsqol.toml {pkgname}={version}')
+		return False
+
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
 	# NOT ALWAYS TRUE, KEEP THIS SPECIAL CASE LAST
