@@ -43,7 +43,7 @@ def callcheckfile(path):
 	if not checkbinflag:
 		return 0
 	if not idontcareaboutsecurity:
-		dangerouschars = dict.fromkeys(map(ord, "&'\"\\|><"), None)
+		dangerouschars = dict.fromkeys(map(ord, "()&'\"\\|><"), None)
 		path2 = path.translate(dangerouschars)
 		if path != path2:
 			print('Warning: possible ACE attempt detected. CHECK SYSTEM FOR \
