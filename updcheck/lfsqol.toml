@@ -278,6 +278,16 @@ source = "repology"
 repology = "eza"
 repo = "arch"
 
+[iputils]
+source = "repology"
+repology = "iputils"
+repo = "arch"
+
+[libtree-ldd]
+source = "repology"
+repology = "libtree-ldd"
+repo = "debian_unstable"
+
 [tealdeer]
 source = "repology"
 repology = "tealdeer"
@@ -302,6 +312,30 @@ repo = "arch"
 source = "repology"
 repology = "intercal"
 repo = "freebsd"
+
+[structlog]
+source = "pypi"
+pypi = "structlog"
+
+[platformdirs]
+source = "pypi"
+pypi = "platformdirs"
+
+[pycurl]
+source = "pypi"
+pypi = "pycurl"
+
+[toml]
+source = "pypi"
+pypi = "toml"
+
+[tornado]
+source = "pypi"
+pypi = "tornado"
+
+[nvchecker]
+source = "pypi"
+pypi = "nvchecker"
 
 [strace]
 source = "repology"
@@ -507,6 +541,11 @@ repo = "arch"
 source = "repology"
 repology = "i3"
 repo = "arch"
+
+[sxwm]
+source = "repology"
+repology = "sxwm"
+repo = "t2"
 
 [wayfire]
 source = "repology"
