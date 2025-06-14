@@ -75,7 +75,7 @@ if os.getenv('DOCSTUBGEN_BINARY_DETECT'):
 		print('You have set the DOCSTUBGEN_BINARY_DETECT environment variable.', file=sys.stderr)
 		print('This variable enables attempted automatic detection of binaries \
 and scripts using the file command, which involves passing user input into executed commands.', file=sys.stderr)
-		print('While the LFS-QOL editors have tried to sanitize user input from any unwanted \
+		print('While the SLFS editors have tried to sanitize user input from any unwanted \
 characters which may lead to ACE, there are simply too many ways to cause ACE in this scenario.', file=sys.stderr)
 		print('If you try to generate documentation for some sketchy application and it \
 leads to your computer getting hacked by some state-sponsored hackers, we disclaim ANY \

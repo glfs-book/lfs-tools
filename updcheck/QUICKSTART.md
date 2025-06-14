@@ -1,6 +1,6 @@
 # updcheck
 
-A tool for checking LFS-QOL package updates.
+A tool for checking SLFS package updates.
 
 ## Dependencies
 
@@ -17,7 +17,7 @@ package.
 
 ## Running
 
-Just run ``check.sh`` on the LFS-QOL packages.ent file.
+Just run ``check.sh`` on the SLFS packages.ent file.
 
 ## Quirks
 

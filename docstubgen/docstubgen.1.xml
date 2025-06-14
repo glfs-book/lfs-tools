@@ -7,7 +7,7 @@
 <refmeta>
 <refentrytitle>docstubgen</refentrytitle>
 <manvolnum>1</manvolnum>
-<refmiscinfo class='source'>April 12, 2025</refmiscinfo>
+<refmiscinfo class='source'>June 14, 2025</refmiscinfo>
 <refmiscinfo class='manual'>lfs-tools</refmiscinfo>
 </refmeta>
 <refnamediv>
@@ -25,7 +25,7 @@
 
 <refsect1 id='description'><title>DESCRIPTION</title>
 <para>docstubgen is a utility which generates documentation stubs for packages
-in XML format suitable for inclusion into LFS-QOL with minor
+in XML format suitable for inclusion into SLFS with minor
 modifications.</para>
 
 </refsect1>
