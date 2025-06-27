@@ -7,6 +7,8 @@ set -e
 
 if [ -z "$1" ]; then
 	echo "Usage: check.sh packages.ent"
+	echo "Set the CONTINUE_ON_ERRORS environment variable to ignore errors"
+	echo "post-Stage 1. Warning: NOT RECOMMENDED."
 	exit 1
 fi
 
@@ -24,6 +26,15 @@ fi
 echo "Running Stage 1 - packagesent2toml"
 python3 packagesent2toml.py $1 > /dev/null
 echo "Stage 1 finished successfully."
+
+if [ ! -z "${CONTINUE_ON_ERRORS}" ]; then
+	echo "WARNING: You have chosen to ignore all errors post-Stage 1."
+	echo "This is NOT something the updcheck maintainers recommend doing,"
+	echo "and if you have an actual issue with updcheck, it is better to"
+	echo "report it to the maintainers on the lfs-tools issue tracker than"
+	echo "to use this option. Continue at your own risk."
+	set +e
+fi
 
 echo "Running Stage 2 - nvchecker"
 nvchecker -c lfsqol.toml --failures -l error
