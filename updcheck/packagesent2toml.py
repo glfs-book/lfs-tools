@@ -378,6 +378,11 @@ pypi = "{pkgname}"
 		os.system(f'nvtake -c lfsqol.toml {pkgname}={version}')
 		return False
 
+	# seal331 27/06/2025 20:08 MSK: we call sdl2-compat just sdl2 but
+	# Repology doesn't do that, so rename it back
+	if ('sdl2' == pkgname):
+		pkgname = 'sdl2-compat'
+
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
 	# NOT ALWAYS TRUE, KEEP THIS SPECIAL CASE LAST
