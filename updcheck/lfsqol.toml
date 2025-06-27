@@ -218,11 +218,6 @@ source = "repology"
 repology = "minicom"
 repo = "arch"
 
-[mesa-demos]
-source = "repology"
-repology = "mesa-demos"
-repo = "arch"
-
 [ncompress]
 source = "repology"
 repology = "ncompress"
@@ -236,11 +231,6 @@ repo = "alpine_edge"
 [fastfetch]
 source = "repology"
 repology = "fastfetch"
-repo = "arch"
-
-[obs-studio]
-source = "repology"
-repology = "obs-studio"
 repo = "arch"
 
 [rpmextract]
@@ -257,11 +247,6 @@ repo = "arch"
 source = "repology"
 repology = "tmux"
 repo = "debian_unstable"
-
-[wbg]
-source = "repology"
-repology = "wbg"
-repo = "opensuse_tumbleweed"
 
 [yt-dlp]
 source = "repology"
@@ -372,11 +357,6 @@ source = "repology"
 repology = "xcb-util-xrm"
 repo = "arch"
 
-[xeyes]
-source = "repology"
-repology = "xeyes"
-repo = "arch"
-
 [xcb-imdkit]
 source = "repology"
 repology = "xcb-imdkit"
@@ -400,6 +380,26 @@ repo = "arch"
 [wofi]
 source = "repology"
 repology = "wofi"
+repo = "arch"
+
+[mesa-demos]
+source = "repology"
+repology = "mesa-demos"
+repo = "arch"
+
+[obs-studio]
+source = "repology"
+repology = "obs-studio"
+repo = "arch"
+
+[wbg]
+source = "repology"
+repology = "wbg"
+repo = "opensuse_tumbleweed"
+
+[xeyes]
+source = "repology"
+repology = "xeyes"
 repo = "arch"
 
 [fcitx5]
@@ -447,39 +447,19 @@ source = "repology"
 repology = "fcitx5-configtool"
 repo = "arch"
 
-[heirloom-ng]
-source = "github"
-github = "Projeto-Pindorama/heirloom-ng"
-use_latest_release = true
-
-[schilytools]
+[rubberband]
 source = "repology"
-repology = "schilytools"
-repo = "opensuse_tumbleweed"
-
-[heirloom-sh]
-source = "repology"
-repology = "heirloom-sh"
-repo = "gentoo"
-
-[heirloom-devtools]
-source = "repology"
-repology = "heirloom-devtools"
-repo = "adelie_current"
-
-[s-nail]
-source = "repology"
-repology = "s-nail"
+repology = "rubberband"
 repo = "arch"
 
-[ostree]
+[sdl3]
 source = "repology"
-repology = "ostree"
+repology = "sdl3"
 repo = "arch"
 
-[flatpak]
+[sdl2-compat]
 source = "repology"
-repology = "flatpak"
+repology = "sdl2-compat"
 repo = "arch"
 
 [cdesktopenv]
@@ -581,4 +561,39 @@ repo = "alpine_edge"
 source = "repology"
 repology = "openttd"
 repo = "t2"
+
+[ostree]
+source = "repology"
+repology = "ostree"
+repo = "arch"
+
+[flatpak]
+source = "repology"
+repology = "flatpak"
+repo = "arch"
+
+[heirloom-ng]
+source = "github"
+github = "Projeto-Pindorama/heirloom-ng"
+use_latest_release = true
+
+[schilytools]
+source = "repology"
+repology = "schilytools"
+repo = "opensuse_tumbleweed"
+
+[heirloom-sh]
+source = "repology"
+repology = "heirloom-sh"
+repo = "gentoo"
+
+[heirloom-devtools]
+source = "repology"
+repology = "heirloom-devtools"
+repo = "adelie_current"
+
+[s-nail]
+source = "repology"
+repology = "s-nail"
+repo = "arch"
 
