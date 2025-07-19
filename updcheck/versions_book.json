@@ -8,7 +8,7 @@
       "version": "0.4"
     },
     "aquamarine-rendering-backend": {
-      "version": "0.8.0"
+      "version": "0.9.1"
     },
     "asio": {
       "version": "1.34.2"
@@ -17,7 +17,7 @@
       "version": "2.25"
     },
     "btop": {
-      "version": "1.4.3"
+      "version": "1.4.4"
     },
     "byacc": {
       "version": "20241231"
@@ -41,40 +41,40 @@
       "version": "1.3.18"
     },
     "eza": {
-      "version": "0.21.4"
+      "version": "0.23.0"
     },
     "fastfetch": {
-      "version": "2.44.0"
+      "version": "2.47.0"
     },
     "fcft": {
       "version": "3.3.1"
     },
     "fcitx5": {
-      "version": "5.1.12"
+      "version": "5.1.14"
     },
     "fcitx5-anthy": {
-      "version": "5.1.6"
+      "version": "5.1.7"
     },
     "fcitx5-chinese-addons": {
-      "version": "5.1.8"
+      "version": "5.1.9"
     },
     "fcitx5-configtool": {
       "version": "5.1.9"
     },
     "fcitx5-gtk": {
-      "version": "5.1.3"
+      "version": "5.1.4"
     },
     "fcitx5-lua": {
-      "version": "5.0.14"
+      "version": "5.0.15"
     },
     "fcitx5-m17n": {
-      "version": "5.1.3"
+      "version": "5.1.4"
     },
     "fcitx5-qt": {
-      "version": "5.1.9"
+      "version": "5.1.10"
     },
     "fcitx5-table-extra": {
-      "version": "5.1.7"
+      "version": "5.1.8"
     },
     "flatpak": {
       "version": "1.16.1"
@@ -86,7 +86,7 @@
       "version": "2.01"
     },
     "glaze": {
-      "version": "5.4.1"
+      "version": "5.5.2"
     },
     "glu": {
       "version": "9.0.3"
@@ -107,7 +107,7 @@
       "version": "0.1.12"
     },
     "hyprgraphics": {
-      "version": "0.1.4"
+      "version": "0.1.5"
     },
     "hyprland": {
       "version": "0.49.0"
@@ -125,10 +125,10 @@
       "version": "0.6.3"
     },
     "hyprutils": {
-      "version": "0.7.1"
+      "version": "0.8.1"
     },
     "hyprwayland-scanner": {
-      "version": "0.4.4"
+      "version": "0.4.5"
     },
     "i3": {
       "version": "4.24"
@@ -158,13 +158,16 @@
       "version": "4.33"
     },
     "libime": {
-      "version": "1.1.10"
+      "version": "1.1.11"
     },
     "libjuice": {
       "version": "1.6.0"
     },
     "libliftoff": {
       "version": "0.5.0"
+    },
+    "libmspack": {
+      "version": "1.11"
     },
     "libspng": {
       "version": "0.7.4"
@@ -200,7 +203,7 @@
       "version": "3.6.3"
     },
     "melonds": {
-      "version": "1.0rc"
+      "version": "1.0"
     },
     "mesa-demos": {
       "version": "9.0.0"
@@ -334,6 +337,9 @@
     "websocketpp": {
       "version": "0.8.2"
     },
+    "winetricks": {
+      "version": "20250102"
+    },
     "wofi": {
       "version": "1.4.1"
     },
@@ -356,7 +362,7 @@
       "version": "2.1.0"
     },
     "yt-dlp": {
-      "version": "2025.06.09"
+      "version": "2025.06.30"
     },
     "zlib": {
       "version": "1.3.1"

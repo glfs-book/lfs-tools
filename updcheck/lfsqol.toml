@@ -53,6 +53,11 @@ source = "repology"
 repology = "libdatachannel"
 repo = "arch"
 
+[libmspack]
+source = "repology"
+repology = "libmspack"
+repo = "arch"
+
 [libutempter]
 source = "repology"
 repology = "libutempter"
@@ -247,6 +252,11 @@ repo = "arch"
 source = "repology"
 repology = "tmux"
 repo = "debian_unstable"
+
+[winetricks]
+source = "repology"
+repology = "winetricks"
+repo = "arch"
 
 [yt-dlp]
 source = "repology"
