@@ -83,6 +83,11 @@ source = "repology"
 repology = "mbedtls"
 repo = "arch"
 
+[msgraph]
+source = "repology"
+repology = "msgraph"
+repo = "arch"
+
 [zlib]
 source = "repology"
 repology = "zlib"
@@ -223,6 +228,17 @@ source = "repology"
 repology = "minicom"
 repo = "arch"
 
+[gkermit]
+source = "repology"
+repology = "gkermit"
+repo = "debian_unstable"
+
+[ncdu]
+source = "repology"
+repology = "ncdu"
+repo = "alpine_edge"
+include_regex = "1\\..*"
+
 [ncompress]
 source = "repology"
 repology = "ncompress"
@@ -303,11 +319,6 @@ source = "repology"
 repology = "cuda"
 repo = "arch"
 
-[intercal]
-source = "repology"
-repology = "intercal"
-repo = "freebsd"
-
 [structlog]
 source = "pypi"
 pypi = "structlog"
@@ -340,6 +351,11 @@ repo = "arch"
 [socat]
 source = "repology"
 repology = "socat"
+repo = "arch"
+
+[wev]
+source = "repology"
+repology = "wev"
 repo = "arch"
 
 [ksh]
@@ -542,11 +558,6 @@ source = "repology"
 repology = "wayfire"
 repo = "debian_unstable"
 
-[gkermit]
-source = "repology"
-repology = "gkermit"
-repo = "debian_unstable"
-
 [melonds]
 source = "repology"
 repology = "melonds"
@@ -555,7 +566,7 @@ repo = "opensuse_tumbleweed"
 [dolphin-emu]
 source = "repology"
 repology = "dolphin-emu"
-repo = "fedora_rawhide"
+repo = "opensuse_tumbleweed"
 
 [mupen64plus]
 source = "repology"
