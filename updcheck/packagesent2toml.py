@@ -170,9 +170,10 @@ def parsexml(line):
 	# seal331 23/05/2025 1:23 MSK: dolphin has a different name on
 	# Repology's side
 	# seal331 23/05/2025 4:45 MSK: and it's also not up to date in Arch
+	# seal331 12/08/2025 1:25 MSK: and now Fedora didn't update it...
 	if ('dolphin' == pkgname):
 		pkgname = 'dolphin-emu'
-		repo = 'fedora_rawhide'
+		repo = 'opensuse_tumbleweed'
 
 	# seal331 23/05/2025 1:28 MSK: prismlauncher has a different name on
 	# Repology's side and is not in Arch's official repos
@@ -382,6 +383,23 @@ pypi = "{pkgname}"
 	# Repology doesn't do that, so rename it back
 	if ('sdl2' == pkgname):
 		pkgname = 'sdl2-compat'
+
+	# seal331 12/08/2025 01:02 MSK: we ship the LTS version of ncdu, so
+	# here's a hack to only check 1.x versions (the architecture of
+	# updcheck doesn't allow us to make this nicer)
+	# seal331 12/08/2025 01:16 MSK: and Arch doesn't ship NCDU 1...
+	if ('ncdu' == pkgname):
+		repo = 'alpine_edge'
+		print(f'Currently parsing {pkgname}')
+		tomlout.write(f'''[{pkgname}]
+source = "repology"
+repology = "{pkgname}"
+repo = "{repo}"
+include_regex = "1\\\\..*"
+
+''')
+		os.system(f'nvtake -c lfsqol.toml {pkgname}={version}')
+		return False
 
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
