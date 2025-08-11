@@ -6,3 +6,4 @@ freebee https://github.com/philpem/freebee
 s4-3b1-pc7300 https://github.com/dgesswein/s4-3b1-pc7300
 p20-emu https://github.com/Spritetm/plexus_20_emu
 mgba https://github.com/mgba-emu/mgba
+xtrace https://github.com/yuq/xtrace
