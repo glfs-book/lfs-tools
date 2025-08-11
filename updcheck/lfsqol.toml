@@ -237,7 +237,7 @@ repo = "debian_unstable"
 source = "repology"
 repology = "ncdu"
 repo = "alpine_edge"
-include_regex = "1\\..*"
+include_regex = "^1\\..*"
 
 [ncompress]
 source = "repology"

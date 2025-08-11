@@ -388,6 +388,7 @@ pypi = "{pkgname}"
 	# here's a hack to only check 1.x versions (the architecture of
 	# updcheck doesn't allow us to make this nicer)
 	# seal331 12/08/2025 01:16 MSK: and Arch doesn't ship NCDU 1...
+	# seal331 12/08/2025 02:04 MSK: slightly improve regex (thanks Tox!)
 	if ('ncdu' == pkgname):
 		repo = 'alpine_edge'
 		print(f'Currently parsing {pkgname}')
@@ -395,7 +396,7 @@ pypi = "{pkgname}"
 source = "repology"
 repology = "{pkgname}"
 repo = "{repo}"
-include_regex = "1\\\\..*"
+include_regex = "^1\\\\..*"
 
 ''')
 		os.system(f'nvtake -c lfsqol.toml {pkgname}={version}')
