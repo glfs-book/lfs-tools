@@ -24,6 +24,9 @@ with open(sys.argv[1], 'r') as f:
 		repos[tmp[0]] = tmp[1].strip()
 
 print('Parsing requested Git repos...')
+# this WILL overwrite the old gitcheck-upd.txt
+# yes, this is intentional
+outfile = open("gitcheck-upd.txt", "w")
 with open(sys.argv[2], 'r') as f:
 	for line in f:
 		tmp = line.split(' ')
@@ -40,6 +43,8 @@ with open(sys.argv[2], 'r') as f:
 		newver = newver.split(b'\t')[0].decode('utf-8')
 		if tmp[1] != newver:
 			print(f'Update available for {tmp[0]}: {tmp[1][:6]} -> {newver[:6]}')
-			os.system(f'echo "Update available for {tmp[0]}: {tmp[1][:6]} -> {newver[:6]}" >> gitcheck-upd.txt')
+			outfile.write(f'Update available for {tmp[0]}: {tmp[1][:6]} -> {newver[:6]}')
 
+
+outfile.close()
 print('Done.')
