@@ -8,3 +8,4 @@ rpo s4-3b1-pc7300 https://github.com/dgesswein/s4-3b1-pc7300
 rpo p20-emu https://github.com/Spritetm/plexus_20_emu
 rpo mgba https://github.com/mgba-emu/mgba
 rpo xtrace https://github.com/yuq/xtrace
+rpo gliden64 https://github.com/gonetz/GLideN64
