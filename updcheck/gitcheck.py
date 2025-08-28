@@ -104,22 +104,6 @@ for repo in notifs.keys():
 		print(f'Error: malformed knowngit.txt: unknown repo {repo} in ntf directive', file=sys.stderr)
 		sys.exit(1)
 
-print('Parsing requested Git repos...')
-# verification pass for cmt directive (mandated by spec 1.1)
-cmtamount = 0
-with open(sys.argv[2], 'r') as f_verify:
-	for line in f_verify:
-		tmp = line.split(' ')
-		if tmp[0] == 'rem' or tmp[0] == 'ntf' or tmp[0] == 'rpo' or tmp[0] == 'mde':
-			# we check this later
-			continue
-		if tmp[0] == 'cmt':
-			cmtamount += 1
-
-if cmtamount == 0:
-	print(f'Error: malformed currentver.txt: no cmt directives specified', file=sys.stderr)
-	sys.exit(1)
-
 if mode == 'antiabuse_standard':
 	beeps_scheduled = 0
 	for key, value in notifs.items():
@@ -145,12 +129,11 @@ if mode == 'antiabuse_silent':
 				else:
 					beeps_scheduled += 1
 
-
-# this WILL overwrite the old gitcheck-upd.txt
-# yes, this is intentional
-outfile = open("gitcheck-upd.txt", "w")
-with open(sys.argv[2], 'r') as f:
-	for line in f:
+print('Parsing requested Git repos...')
+# verification pass
+cmtamount = 0
+with open(sys.argv[2], 'r') as f_verify:
+	for line in f_verify:
 		tmp = line.split(' ')
 		if tmp[0] == 'rem':
 			continue
@@ -165,14 +148,34 @@ with open(sys.argv[2], 'r') as f:
 			sys.exit(1)
 		elif tmp[0] == 'cmt':
 			if len(tmp) != 3:
-				print('Error: malformed currentver.txt: invalid amount of parameters in cmt directive: 2 expected, {len(tmp) - 1} received', file=sys.stderr)
+				print(f'Error: malformed currentver.txt: invalid amount of parameters in cmt directive: 2 expected, {len(tmp) - 1} received', file=sys.stderr)
 				sys.exit(1)
 			reponame = tmp[1]
-			commitid = tmp[2].strip('\n')
-
 			if reponame not in repos:
 				print(f'Error: unknown repo {reponame}. Please contact seal331.', file=sys.stderr)
 				sys.exit(1)
+			cmtamount += 1
+		else:
+			print(f'Error: malformed currentver.txt: unknown directive {tmp[0]}', file=sys.stderr)
+			sys.exit(1)
+
+if cmtamount == 0:
+        print(f'Error: malformed currentver.txt: no cmt directives specified', file=sys.stderr)
+        sys.exit(1)
+
+# this WILL overwrite the old gitcheck-upd.txt
+# yes, this is intentional
+outfile = open("gitcheck-upd.txt", "w")
+# no error handling in this loop anymore, all that got moved to the verification
+# pass above
+# if there's somehow an error that got past the verification pass -
+# WE'RE IN BIG TROUBLE
+with open(sys.argv[2], 'r') as f:
+	for line in f:
+		tmp = line.split(' ')
+		if tmp[0] == 'cmt':
+			reponame = tmp[1]
+			commitid = tmp[2].strip('\n')
 
 			newver = subprocess.check_output(['git', 'ls-remote', repos[reponame], 'HEAD'])
 
@@ -186,9 +189,6 @@ with open(sys.argv[2], 'r') as f:
 						print(f'Notification from {notif[1]} for {reponame}: {notif[2]}')
 				print(f'Update available for {reponame}: {commitid[:6]} -> {newver[:6]}')
 				outfile.write(f'Update available for {reponame}: {commitid[:6]} -> {newver[:6]}')
-		else:
-			print(f'Error: malformed currentver.txt: unknown directive {tmp[0]}', file=sys.stderr)
-			sys.exit(1)
 
 outfile.close()
 print('Done.')
