@@ -163,6 +163,11 @@ source = "repology"
 repology = "glu"
 repo = "arch"
 
+[intel-media-sdk]
+source = "repology"
+repology = "intel-media-sdk"
+repo = "arch"
+
 [libdecor]
 source = "repology"
 repology = "libdecor"
@@ -178,10 +183,20 @@ source = "repology"
 repology = "libspng"
 repo = "arch"
 
+[libvpl]
+source = "repology"
+repology = "libvpl"
+repo = "arch"
+
 [nv-codec-headers]
 source = "repology"
 repology = "nv-codec-headers"
 repo = "arch"
+
+[vpl-gpu-rt]
+source = "repology"
+repology = "vpl-gpu-rt"
+repo = "fedora_rawhide"
 
 [xdg-desktop-portal-hyprland]
 source = "repology"
@@ -378,6 +393,11 @@ source = "repology"
 repology = "motif"
 repo = "arch"
 
+[xcb-util-errors]
+source = "repology"
+repology = "xcb-util-errors"
+repo = "arch"
+
 [xcb-util-xrm]
 source = "repology"
 repology = "xcb-util-xrm"
@@ -406,6 +426,11 @@ repo = "arch"
 [wofi]
 source = "repology"
 repology = "wofi"
+repo = "arch"
+
+[libvpl-tools]
+source = "repology"
+repology = "libvpl-tools"
 repo = "arch"
 
 [mesa-demos]
