@@ -23,7 +23,7 @@ if not MAINTAINER_MODE:
 	pkgs = list(normal_pkgs)[1:]
 	with open("./lfsqol-git.txt", "r") as f:
 		for line in f:
-			pkgs.append(line.split(' ')[0])
+			pkgs.append(line.split(' ')[1])
 
 # seal's ad-hoc purpose-built xml parser
 # i'm too stupid to figure out how to use a proper XML parser with this
@@ -445,7 +445,7 @@ with open(sys.argv[1], 'r') as f:
 				continue
 		print(f'Currently parsing {parsed[1]}')
 		if parsed[1] in gitstuff:
-			gitout.write(f"{parsed[1]} {parsed[2]}\n")
+			gitout.write(f"cmt {parsed[1]} {parsed[2]}\n")
 		else:
 			tomlout.write(f'''[{parsed[1]}]
 source = "repology"
