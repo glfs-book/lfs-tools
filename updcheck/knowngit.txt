@@ -1,3 +1,4 @@
+mde normal
 rpo jstest-sdl https://github.com/meleu/jstest-sdl
 rpo heirloom-doctools https://github.com/n-t-roff/heirloom-doctools
 rpo pkgsuite https://github.com/mamccollum/pkgsuite
