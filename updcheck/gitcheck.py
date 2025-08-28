@@ -3,12 +3,16 @@
 # gitcheck - seal's git repo update checker
 # (C) Seal Sealy, 2025
 
+# KEEP THIS IN SYNC WITH THE VERSION OF THE SPEC WE CONFORM TO
+specversion = '1.0'
+
 import subprocess
 import sys
 import os
 
 def usage():
 	print(f'Usage: {sys.argv[0]} knowngit.txt currentver.txt', file=sys.stderr)
+	print(f'This GitCheck conforms with the GitCheck File Format Specification Version {specversion}.', file=sys.stderr)
 	sys.exit(1)
 
 if len(sys.argv) != 3:
@@ -27,7 +31,7 @@ with open(sys.argv[1], 'r') as f:
 				print(f'Error: malformed knowngit.txt: expected 4 or more parameters in ntf directive, {len(tmp) - 1} received', file=sys.stderr)
 				sys.exit(1)
 			if tmp[2] != 'y' and tmp[2] != 'n':
-				print(f'Error: malformed knowngit.txt: ntf directive "do we beep" parameter isn\'t y or n, it\'s {tmp[2]}', file=sys.stderr)
+				print(f'Error: malformed knowngit.txt: ntf directive "beep" parameter isn\'t y or n, it\'s {tmp[2]}', file=sys.stderr)
 				sys.exit(1)
 			if tmp[1] not in notifs:
 				notifs[tmp[1]] = []
