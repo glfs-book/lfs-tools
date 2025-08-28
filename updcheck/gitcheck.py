@@ -4,7 +4,7 @@
 # (C) Seal Sealy, 2025
 
 # KEEP THIS IN SYNC WITH THE VERSION OF THE SPEC WE CONFORM TO
-specversion = '1.0'
+specversion = '1.1'
 
 import subprocess
 import sys
@@ -20,10 +20,19 @@ if len(sys.argv) != 3:
 
 repos = {}
 notifs = {}
+# the architecture of updcheck doesn't allow you to put an int into this
+# variable with a malformed mde directive, therefore use an int to avoid giving
+# the user the wrong error in obscure corner cases that look more like
+# intentional misuse, but anyway
+mode = 13371337
+antiabusemodenum = 'NERPA'
+supportedmodes = ['normal', 'antiabuse', 'silent']
 print('Parsing known Git repos...')
 with open(sys.argv[1], 'r') as f:
 	for line in f:
 		tmp = line.split(' ')
+		# hack for unknown/malformed directives alone on line
+		tmp[0] = tmp[0].strip('\n')
 		if tmp[0] == 'rem':
 			continue
 		elif tmp[0] == 'ntf':
@@ -46,9 +55,49 @@ with open(sys.argv[1], 'r') as f:
 		elif tmp[0] == 'cmt':
 			print('Error: malformed knowngit.txt: cmt directive in file', file=sys.stderr)
 			sys.exit(1)
+		elif tmp[0] == 'mde':
+			if mode != 13371337:
+				print(f'Error: malformed knowngit.txt: multiple mde directives', file=sys.stderr)
+				sys.exit(1)
+			if len(tmp) < 2:
+				print(f'Error: malformed knowngit.txt: mde directive with no parameters', file=sys.stderr)
+				sys.exit(1)
+			mode_to_be_set = tmp[1].strip('\n')
+			argcount = 2
+			if mode_to_be_set == 'antiabuse':
+				argcount = 3
+			if len(tmp) != argcount:
+				print(f'Error: malformed knowngit.txt: invalid amount of parameters in mde directive, {argcount - 1} expected, {len(tmp) - 1} received', file=sys.stderr)
+				sys.exit(1)
+			if mode_to_be_set not in supportedmodes:
+				print(f'Error: malformed knowngit.txt: unsupported mode in mde directive, see specification', file=sys.stderr)
+				sys.exit(1)
+			mode = mode_to_be_set
+			if mode_to_be_set == 'antiabuse':
+				try:
+					int(tmp[2])
+				except ValueError:
+					print(f'Error: malformed knowngit.txt: ValueError encountered converting num parameter to an integer, are you sure you passed an integer?', file=sys.stderr)
+					sys.exit(1)
+				if int(tmp[2]) < 0:
+					print(f'Error: malformed knowngit.txt: mde directive num parameter less than 0', file=sys.stderr)
+					sys.exit(1)
+				antiabusemodenum = int(tmp[2])
 		else:
 			print(f'Error: malformed knowngit.txt: unknown directive {tmp[0]} in file', file=sys.stderr)
 			sys.exit(1)
+
+if len(repos) == 0:
+	print(f'Error: malformed knowngit.txt: no rpo directives specified', file=sys.stderr)
+	sys.exit(1)
+
+if mode == 13371337:
+	print(f'Error: malformed knowngit.txt: no mde directive specified', file=sys.stderr)
+	sys.exit(1)
+
+if mode == 'antiabuse' and antiabusemodenum == 'NERPA':
+	print(f'Error: internal error: mode is antiabuse and antiabusemodenum is still unset for some reason, contact seal331', file=sys.stderr)
+	sys.exit(1)
 
 for repo in notifs.keys():
 	if repo not in repos:
@@ -56,6 +105,34 @@ for repo in notifs.keys():
 		sys.exit(1)
 
 print('Parsing requested Git repos...')
+# verification pass for cmt directive (mandated by spec 1.1)
+cmtamount = 0
+with open(sys.argv[2], 'r') as f_verify:
+	for line in f_verify:
+		tmp = line.split(' ')
+		if tmp[0] == 'rem' or tmp[0] == 'ntf' or tmp[0] == 'rpo' or tmp[0] == 'mde':
+			# we check this later
+			continue
+		if tmp[0] == 'cmt':
+			cmtamount += 1
+
+if cmtamount == 0:
+	print(f'Error: malformed currentver.txt: no cmt directives specified', file=sys.stderr)
+	sys.exit(1)
+
+if mode == 'antiabuse':
+	beeps_scheduled = 0
+	notifslist = list(notifs.values())
+	for toplevellist in notifslist:
+		for midlevellist in toplevellist:
+			for bottomlevellist in midlevellist:
+				if bottomlevellist[0] == 'y':
+					beeps_scheduled += 1
+
+	if beeps_scheduled > antiabusemodenum:
+		print(f'Error: anti-abuse protection violation: {antiabusemodenum} beeps allowed, {beeps_scheduled} beeps scheduled', file=sys.stderr)
+		sys.exit(1)
+
 # this WILL overwrite the old gitcheck-upd.txt
 # yes, this is intentional
 outfile = open("gitcheck-upd.txt", "w")
@@ -69,6 +146,9 @@ with open(sys.argv[2], 'r') as f:
 			sys.exit(1)
 		elif tmp[0] == 'rpo':
 			print(f'Error: malformed currentver.txt: rpo directive in file', file=sys.stderr)
+			sys.exit(1)
+		elif tmp[0] == 'mde':
+			print(f'Error: malformed currentver.txt: mde directive in file', file=sys.stderr)
 			sys.exit(1)
 		elif tmp[0] == 'cmt':
 			if len(tmp) != 3:
@@ -88,7 +168,7 @@ with open(sys.argv[2], 'r') as f:
 			if commitid != newver:
 				if len(notifs[reponame]) != 0:
 					for notif in notifs[reponame]:
-						if notif[0] == 'y' and sys.stdout.isatty():
+						if notif[0] == 'y' and sys.stdout.isatty() and (not (mode == 'silent')):
 							print('\a', end='')
 						print(f'Notification from {notif[1]} for {reponame}: {notif[2]}')
 				print(f'Update available for {reponame}: {commitid[:6]} -> {newver[:6]}')
