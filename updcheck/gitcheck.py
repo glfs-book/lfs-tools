@@ -122,9 +122,8 @@ if cmtamount == 0:
 
 if mode == 'antiabuse_standard':
 	beeps_scheduled = 0
-	notifslist = list(notifs.values())
-	for toplevellist in notifslist:
-		for midlevellist in toplevellist:
+	for key, value in notifs.items():
+		for midlevellist in value:
 			for bottomlevellist in midlevellist:
 				if bottomlevellist[0] == 'y':
 					beeps_scheduled += 1
@@ -133,6 +132,8 @@ if mode == 'antiabuse_standard':
 		print(f'Error: anti-abuse protection violation: {antiabusemodenum} beeps allowed, {beeps_scheduled} beeps scheduled', file=sys.stderr)
 		sys.exit(1)
 
+# we have to suffer with all this range(len(thing)) hackery because unlike in
+# the last loop we actually may need to modify this one
 if mode == 'antiabuse_silent':
 	beeps_scheduled = 0
 	for key, value in notifs.items():
