@@ -46,6 +46,11 @@ with open(sys.argv[1], 'r') as f:
 			print(f'Error: malformed knowngit.txt: unknown directive {tmp[0]} in file', file=sys.stderr)
 			sys.exit(1)
 
+for repo in notifs.keys():
+	if repo not in repos:
+		print(f'Error: malformed knowngit.txt: unknown repo {repo} in ntf directive', file=sys.stderr)
+		sys.exit(1)
+
 print('Parsing requested Git repos...')
 # this WILL overwrite the old gitcheck-upd.txt
 # yes, this is intentional
