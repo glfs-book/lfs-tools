@@ -85,8 +85,8 @@ rather than aborting)
 - silent (all beeps are ignored)  
   
 Parameter 2 (num): Specifies the maximum amount of beeps (inclusive) allowed to
-be scheduled before GitCheck is aborted. Should only be specified if antiabuse
-mode is selected.  
+be scheduled before GitCheck is aborted. Should only be specified if an
+antiabuse mode is selected.  
 Format: number
 #### IMPORTANT NOTE ABOUT THE MDE DIRECTIVE
 Directive mde antiabuse\_silent 0 is a reserved special value.  
