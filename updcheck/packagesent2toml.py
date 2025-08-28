@@ -126,10 +126,9 @@ def parsexml(line):
 
 	# seal331 22/05/2025 22:08 MSK: mupen64plus is very modular but it's
 	# still one suite
+	# seal331 29/08/2025 00:47 MSK: gliden64 actually isn't a submodule
 	if ('mupen64plus' in pkgname) and (not (pkgname == 'mupen64plus')):
                 return False
-	if ('gliden64' == pkgname):
-		return False
 
 	# seal331 23/05/2025 0:56 MSK: intercal is not in Arch's repos
 	if ('intercal' == pkgname):
@@ -401,6 +400,22 @@ include_regex = "^1\\\\..*"
 ''')
 		os.system(f'nvtake -c lfsqol.toml {pkgname}={version}')
 		return False
+
+	# seal331 29/08/2025 00:33 MSK: Repology has a different name for
+	# intel-mediasdk
+	if ('intel-mediasdk' == pkgname):
+		pkgname = 'intel-media-sdk'
+
+	# seal331 29/08/2025 00:37 MSK: Repology has a different name for Intel
+	# OneVPL too, and Arch doesn't ship an up-to-date version
+	if ('intel-onevpl' == pkgname):
+		pkgname = 'vpl-gpu-rt'
+		repo = 'fedora_rawhide'
+
+	# seal331 29/08/2025 00:48 MSK: GLideN64 is actually a separate Git
+	# repo
+	if ('gliden64' == pkgname):
+		gitstuff.append(pkgname)
 
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
