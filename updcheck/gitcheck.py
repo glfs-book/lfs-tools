@@ -4,7 +4,7 @@
 # (C) Seal Sealy, 2025
 
 # KEEP THIS IN SYNC WITH THE VERSION OF THE SPEC WE CONFORM TO
-specversion = '1.1'
+specversion = '1.1.1'
 
 import subprocess
 import sys
@@ -26,7 +26,7 @@ notifs = {}
 # intentional misuse, but anyway
 mode = 13371337
 antiabusemodenum = 'NERPA'
-supportedmodes = ['normal', 'antiabuse', 'silent']
+supportedmodes = ['normal', 'antiabuse_standard', 'antiabuse_silent', 'silent']
 print('Parsing known Git repos...')
 with open(sys.argv[1], 'r') as f:
 	for line in f:
@@ -63,17 +63,17 @@ with open(sys.argv[1], 'r') as f:
 				print(f'Error: malformed knowngit.txt: mde directive with no parameters', file=sys.stderr)
 				sys.exit(1)
 			mode_to_be_set = tmp[1].strip('\n')
+			if mode_to_be_set not in supportedmodes:
+				print(f'Error: malformed knowngit.txt: unsupported mode in mde directive, see specification', file=sys.stderr)
+				sys.exit(1)
 			argcount = 2
-			if mode_to_be_set == 'antiabuse':
+			if mode_to_be_set == 'antiabuse_standard' or mode_to_be_set == 'antiabuse_silent':
 				argcount = 3
 			if len(tmp) != argcount:
 				print(f'Error: malformed knowngit.txt: invalid amount of parameters in mde directive, {argcount - 1} expected, {len(tmp) - 1} received', file=sys.stderr)
 				sys.exit(1)
-			if mode_to_be_set not in supportedmodes:
-				print(f'Error: malformed knowngit.txt: unsupported mode in mde directive, see specification', file=sys.stderr)
-				sys.exit(1)
 			mode = mode_to_be_set
-			if mode_to_be_set == 'antiabuse':
+			if mode_to_be_set == 'antiabuse_standard' or mode_to_be_set == 'antiabuse_silent':
 				try:
 					int(tmp[2])
 				except ValueError:
@@ -95,8 +95,8 @@ if mode == 13371337:
 	print(f'Error: malformed knowngit.txt: no mde directive specified', file=sys.stderr)
 	sys.exit(1)
 
-if mode == 'antiabuse' and antiabusemodenum == 'NERPA':
-	print(f'Error: internal error: mode is antiabuse and antiabusemodenum is still unset for some reason, contact seal331', file=sys.stderr)
+if (mode == 'antiabuse_standard' or mode == 'antiabuse_silent') and antiabusemodenum == 'NERPA':
+	print(f'Error: internal error: mode is an antiabuse variant and antiabusemodenum is still unset for some reason, contact seal331', file=sys.stderr)
 	sys.exit(1)
 
 for repo in notifs.keys():
@@ -120,7 +120,7 @@ if cmtamount == 0:
 	print(f'Error: malformed currentver.txt: no cmt directives specified', file=sys.stderr)
 	sys.exit(1)
 
-if mode == 'antiabuse':
+if mode == 'antiabuse_standard':
 	beeps_scheduled = 0
 	notifslist = list(notifs.values())
 	for toplevellist in notifslist:
@@ -132,6 +132,18 @@ if mode == 'antiabuse':
 	if beeps_scheduled > antiabusemodenum:
 		print(f'Error: anti-abuse protection violation: {antiabusemodenum} beeps allowed, {beeps_scheduled} beeps scheduled', file=sys.stderr)
 		sys.exit(1)
+
+if mode == 'antiabuse_silent':
+	beeps_scheduled = 0
+	for key, value in notifs.items():
+		for midlevellist in range(len(value)):
+			if value[midlevellist][0] == 'y':
+				if beeps_scheduled >= antiabusemodenum:
+					value[midlevellist][0] = 'n'
+					notifs[key] = value
+				else:
+					beeps_scheduled += 1
+
 
 # this WILL overwrite the old gitcheck-upd.txt
 # yes, this is intentional
