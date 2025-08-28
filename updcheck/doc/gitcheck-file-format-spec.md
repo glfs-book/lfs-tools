@@ -1,10 +1,11 @@
 # GitCheck File Format Specification
-## Revision 1.1
-## 28/08/2025
+## Revision 1.1.1
+## 29/08/2025
 ## (C) The lfs-tools Working Group
 
 | Revision | Revision History | Date |
 | :----: | :----: | :----: |
+| 1.1.1 | Revised antiabuse modes; reserved antiabuse\_silent mode with value 0 | 29/08/2025 | 
 | 1.1 | Added mde directive; specified optional and mandatory directives | 28/08/2025 |
 | 1.0 | Original issue | 28/08/2025 |
 
@@ -33,7 +34,9 @@ both knowngit and currentgit.
 This directive specifies a comment which should not get printed. Any parameters
 specified in the rem directive get thrown out during parsing.
 #### Syntax
-rem \<arbitrary number of parameters\>
+rem \<arbitrary number of parameters\>  
+Parameters 1+ (comment): Specifies the comment.  
+Format: arbitrary  
 
 ## 3. Directives accepted only in knowngit
 
@@ -75,14 +78,22 @@ Parameter 1 (mode): Specifies the mode of operation.
 Format: string (mode name)  
 Currently supported modes of operation:  
 - normal (the beep parameter of the ntf directive is honored all the time)  
-- antiabuse (requires the num parameter; aborts operation if more than num beeps
-are scheduled)  
+- antiabuse\_standard (requires the num parameter; aborts operation if more than
+num beeps are scheduled)  
+- antiabuse\_silent (same as antiabuse\_standard except it disables excess beeps
+rather than aborting)  
 - silent (all beeps are ignored)  
   
 Parameter 2 (num): Specifies the maximum amount of beeps (inclusive) allowed to
 be scheduled before GitCheck is aborted. Should only be specified if antiabuse
 mode is selected.  
 Format: number
+#### IMPORTANT NOTE ABOUT THE MDE DIRECTIVE
+Directive mde antiabuse\_silent 0 is a reserved special value.  
+While in the current GitCheck it functions the same as mde silent, this may
+change in future releases of GitCheck and of this specification. The lfs-tools
+Working Group makes no guarantees about the future operability of any knowngit
+files using this directive.  
 
 ## 4. Directives accepted only in currentgit
 
