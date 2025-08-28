@@ -1,10 +1,11 @@
 # GitCheck File Format Specification
-## Revision 1.0
+## Revision 1.1
 ## 28/08/2025
 ## (C) The lfs-tools Working Group
 
 | Revision | Revision History | Date |
-| :----: | :----: | :----:  |
+| :----: | :----: | :----: |
+| 1.1 | Added mde directive; specified optional and mandatory directives | 28/08/2025 |
 | 1.0 | Original issue | 28/08/2025 |
 
 ## 1. Definitions
@@ -28,6 +29,7 @@ both knowngit and currentgit.
 
 ### 2.1. rem
 #### Full name: REMark
+#### Optional
 This directive specifies a comment which should not get printed. Any parameters
 specified in the rem directive get thrown out during parsing.
 #### Syntax
@@ -37,6 +39,7 @@ rem \<arbitrary number of parameters\>
 
 ### 3.1. ntf
 #### Full name: NoTiFication
+#### Optional
 This directive specifies a comment which should get printed when an update for
 the specified package is detected.
 #### Syntax
@@ -53,6 +56,7 @@ Format: arbitrary
 
 ### 3.2. rpo
 #### Full name: RePO
+#### Required (at least one)
 This directive specifies a source repository.
 #### Syntax
 rpo \<name\> \<repo\>  
@@ -61,10 +65,30 @@ Format: string (package name)
 Parameter 2 (repo): The URL of the Git repository.  
 Format: URL (in the format of https://gitstorage.net/repo)  
 
+### 3.3. mde
+#### Full name: MoDE
+#### Required (exactly one)
+This directive specifies the mode of operation for the ntf directive.
+#### Syntax
+mde \<mode\> \<num\>  
+Parameter 1 (mode): Specifies the mode of operation.  
+Format: string (mode name)  
+Currently supported modes of operation:  
+- normal (the beep parameter of the ntf directive is honored all the time)  
+- antiabuse (requires the num parameter; aborts operation if more than num beeps
+are scheduled)  
+- silent (all beeps are ignored)  
+  
+Parameter 2 (num): Specifies the maximum amount of beeps (inclusive) allowed to
+be scheduled before GitCheck is aborted. Should only be specified if antiabuse
+mode is selected.  
+Format: number
+
 ## 4. Directives accepted only in currentgit
 
 ### 4.1. cmt
 #### Full name: CoMmiT
+#### Required (at least one)
 This directive specifies a commit of a package currently in SLFS.
 #### Syntax
 cmt \<name\> \<commit\>  
