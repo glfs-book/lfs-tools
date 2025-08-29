@@ -34,7 +34,7 @@ both knowngit and currentgit.
 This directive specifies a comment which should not get printed. Any parameters
 specified in the rem directive get thrown out during parsing.
 #### Syntax
-rem \<arbitrary number of parameters\>  
+``rem <arbitrary number of parameters>``  
 Parameters 1+ (comment): Specifies the comment.  
 Format: arbitrary  
 
@@ -46,7 +46,7 @@ Format: arbitrary
 This directive specifies a comment which should get printed when an update for
 the specified package is detected.
 #### Syntax
-ntf \<repository\> \<beep\> \<author\> \<arbitrary number of parameters\>  
+``ntf <repository> <beep> <author> <arbitrary number of parameters>``  
 Parameter 1 (repository): Specifies the package name.  
 Format: string (package name)  
 Parameter 2 (beep): Specifies whether this notification should issue the ASCII  
@@ -62,7 +62,7 @@ Format: arbitrary
 #### Required (at least one)
 This directive specifies a source repository.
 #### Syntax
-rpo \<name\> \<repo\>  
+``rpo <name> <repo>``  
 Parameter 1 (name): The name of the package.  
 Format: string (package name)  
 Parameter 2 (repo): The URL of the Git repository.  
@@ -73,7 +73,7 @@ Format: URL (in the format of https://gitstorage.net/repo)
 #### Required (exactly one)
 This directive specifies the mode of operation for the ntf directive.
 #### Syntax
-mde \<mode\> \<num\>  
+``mde <mode> <num>``  
 Parameter 1 (mode): Specifies the mode of operation.  
 Format: string (mode name)  
 Currently supported modes of operation:  
@@ -102,7 +102,7 @@ files using this directive.
 #### Required (at least one)
 This directive specifies a commit of a package currently in SLFS.
 #### Syntax
-cmt \<name\> \<commit\>  
+``cmt <name> <commit>``  
 Parameter 1 (name): The name of the package.  
 Format: string (package name)  
 Parameter 2 (commit): The commit packaged in SLFS.  
