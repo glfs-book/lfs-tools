@@ -48,4 +48,8 @@ install-docstubgen-man: build-docstubgen-manpage
 install-docstubgen-compat-symlink: install-docstubgen
 	ln -sf docstubgen $(DESTDIR)$(PREFIX)/$(BINDIR)/generate-doc-stub.py
 
+test: build-docstubgen
+	sed -e 's=#prefix#="$(PREFIX)"=g' -e 's=#libexecdir#="$(LIBEXECDIR)"=g' -i $(OBJDIR)/docstubgen
+	tests/test.sh
+
 FRC:
