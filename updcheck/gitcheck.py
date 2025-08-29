@@ -107,10 +107,9 @@ for repo in notifs.keys():
 if mode == 'antiabuse_standard':
 	beeps_scheduled = 0
 	for key, value in notifs.items():
-		for midlevellist in value:
-			for bottomlevellist in midlevellist:
-				if bottomlevellist[0] == 'y':
-					beeps_scheduled += 1
+		for bottomlevellist in value:
+			if bottomlevellist[0] == 'y':
+				beeps_scheduled += 1
 
 	if beeps_scheduled > antiabusemodenum:
 		print(f'Error: anti-abuse protection violation: {antiabusemodenum} beeps allowed, {beeps_scheduled} beeps scheduled', file=sys.stderr)
@@ -121,10 +120,10 @@ if mode == 'antiabuse_standard':
 if mode == 'antiabuse_silent':
 	beeps_scheduled = 0
 	for key, value in notifs.items():
-		for midlevellist in range(len(value)):
-			if value[midlevellist][0] == 'y':
+		for bottomlevellist in range(len(value)):
+			if value[bottomlevellist][0] == 'y':
 				if beeps_scheduled >= antiabusemodenum:
-					value[midlevellist][0] = 'n'
+					value[bottomlevellist][0] = 'n'
 					notifs[key] = value
 				else:
 					beeps_scheduled += 1
