@@ -187,7 +187,7 @@ with open(sys.argv[2], 'r') as f:
 							print('\a', end='')
 						print(f'Notification from {notif[1]} for {reponame}: {notif[2]}')
 				print(f'Update available for {reponame}: {commitid[:6]} -> {newver[:6]}')
-				outfile.write(f'Update available for {reponame}: {commitid[:6]} -> {newver[:6]}')
+				outfile.write(f'Update available for {reponame}: {commitid[:6]} -> {newver[:6]}\n')
 
 outfile.close()
 print('Done.')
