@@ -158,11 +158,6 @@ source = "repology"
 repology = "fcft"
 repo = "arch"
 
-[glu]
-source = "repology"
-repology = "glu"
-repo = "arch"
-
 [intel-media-sdk]
 source = "repology"
 repology = "intel-media-sdk"
@@ -196,7 +191,7 @@ repo = "arch"
 [vpl-gpu-rt]
 source = "repology"
 repology = "vpl-gpu-rt"
-repo = "fedora_rawhide"
+repo = "t2"
 
 [xdg-desktop-portal-hyprland]
 source = "repology"
@@ -223,6 +218,11 @@ source = "repology"
 repology = "btop"
 repo = "arch"
 
+[flatpak]
+source = "repology"
+repology = "flatpak"
+repo = "arch"
+
 [inxi]
 source = "repology"
 repology = "inxi"
@@ -247,6 +247,11 @@ repo = "arch"
 source = "repology"
 repology = "gkermit"
 repo = "debian_unstable"
+
+[ostree]
+source = "repology"
+repology = "ostree"
+repo = "arch"
 
 [ncdu]
 source = "repology"
@@ -284,6 +289,11 @@ source = "repology"
 repology = "tmux"
 repo = "debian_unstable"
 
+[wgetpaste]
+source = "repology"
+repology = "wgetpaste"
+repo = "arch"
+
 [winetricks]
 source = "repology"
 repology = "winetricks"
@@ -317,6 +327,11 @@ repo = "debian_unstable"
 [tealdeer]
 source = "repology"
 repology = "tealdeer"
+repo = "arch"
+
+[autoconf-archive]
+source = "repology"
+repology = "autoconf-archive"
 repo = "arch"
 
 [befunge93]
@@ -378,6 +393,31 @@ source = "repology"
 repology = "ksh"
 repo = "fedora_rawhide"
 
+[ladspa]
+source = "repology"
+repology = "ladspa"
+repo = "arch"
+
+[noise-suppression-for-voice]
+source = "repology"
+repology = "noise-suppression-for-voice"
+repo = "arch"
+
+[rubberband]
+source = "repology"
+repology = "rubberband"
+repo = "arch"
+
+[sdl3]
+source = "repology"
+repology = "sdl3"
+repo = "arch"
+
+[sdl2-compat]
+source = "repology"
+repology = "sdl2-compat"
+repo = "arch"
+
 [printproto]
 source = "repology"
 repology = "printproto"
@@ -391,6 +431,11 @@ repo = "arch"
 [motif]
 source = "repology"
 repology = "motif"
+repo = "arch"
+
+[wlroots]
+source = "repology"
+repology = "wlroots"
 repo = "arch"
 
 [xcb-util-errors]
@@ -428,6 +473,16 @@ source = "repology"
 repology = "wofi"
 repo = "arch"
 
+[swww]
+source = "repology"
+repology = "swww"
+repo = "arch"
+
+[grim]
+source = "repology"
+repology = "grim"
+repo = "arch"
+
 [libvpl-tools]
 source = "repology"
 repology = "libvpl-tools"
@@ -441,6 +496,11 @@ repo = "arch"
 [obs-studio]
 source = "repology"
 repology = "obs-studio"
+repo = "arch"
+
+[slurp]
+source = "repology"
+repology = "slurp"
 repo = "arch"
 
 [wbg]
@@ -496,21 +556,6 @@ repo = "arch"
 [fcitx5-configtool]
 source = "repology"
 repology = "fcitx5-configtool"
-repo = "arch"
-
-[rubberband]
-source = "repology"
-repology = "rubberband"
-repo = "arch"
-
-[sdl3]
-source = "repology"
-repology = "sdl3"
-repo = "arch"
-
-[sdl2-compat]
-source = "repology"
-repology = "sdl2-compat"
 repo = "arch"
 
 [cdesktopenv]
@@ -581,7 +626,7 @@ repo = "t2"
 [wayfire]
 source = "repology"
 repology = "wayfire"
-repo = "debian_unstable"
+repo = "opensuse_tumbleweed"
 
 [melonds]
 source = "repology"
@@ -607,16 +652,6 @@ repo = "alpine_edge"
 source = "repology"
 repology = "openttd"
 repo = "t2"
-
-[ostree]
-source = "repology"
-repology = "ostree"
-repo = "arch"
-
-[flatpak]
-source = "repology"
-repology = "flatpak"
-repo = "arch"
 
 [heirloom-ng]
 source = "github"
