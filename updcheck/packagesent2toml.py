@@ -11,6 +11,7 @@ import tomllib
 
 gitstuff = []
 TMP_inxi_revision = 'PLCHLDR'
+TMP_wlroots_minor = 'PLCHLDR'
 
 def usage():
 	print(f"Usage: {sys.argv[0]} packages.ent", file=sys.stderr)
@@ -28,7 +29,7 @@ if not MAINTAINER_MODE:
 # seal's ad-hoc purpose-built xml parser
 # i'm too stupid to figure out how to use a proper XML parser with this
 def parsexml(line):
-	global gitstuff, TMP_inxi_revision
+	global gitstuff, TMP_inxi_revision, TMP_wlroots_minor
 	repo = 'arch'
 	# check for comments
 	if not line.startswith("<!ENTITY "):
@@ -89,10 +90,13 @@ def parsexml(line):
 	# version of openjdk for compatibility with old Minecraft
 	# seal331 23/05/2025 4:39 MSK: and more Java stuff got added...
 	# seal331 10/06/2025 19:05 MSK: ditto...
+	# seal331 05/11/2025 22:22 MSK: this special case probably broke the
+	# world record for the most updated special case
 	if ('openjdk-major' == pkgname) or ('openjdk' == pkgname) or \
 			('openjdk-build' == pkgname) or ('java-major' == pkgname) or \
 			('java' == pkgname) or ('java-build' == pkgname) or \
-			('jdk-modern' == pkgname):
+			('jdk-modern' == pkgname) or ('java-suffix' == pkgname) or \
+			('openjdk-suffix' == pkgname):
 		return False
 
 	# seal331 22/05/2025 21:56 MSK: rofi-wayland is tied to upstream
@@ -144,8 +148,11 @@ def parsexml(line):
 		repo = 'opensuse_tumbleweed'
 
 	# seal331 23/05/2025 1:00 MSK: wayfire is not in Arch's official repos
+	# seal331 05/11/2025 22:32 MSK: and it's now out-of-date in Debian
+	# seal331 05/11/2025 22:43 MSK: ffs nvchecker pulls up 9999 if we use
+	# Gentoo
 	if ('wayfire' == pkgname):
-		repo = 'debian_unstable'
+		repo = 'opensuse_tumbleweed'
 
 	# seal331 23/05/2025 1:02 MSK: we actually ship a newer version of
 	# xhomer than all the BSDs which are the sole people who ship it other
@@ -292,12 +299,15 @@ use_latest_release = true
 
 	# seal331 30/05/2025 22:16 MSK: see LFS-QOL packages.ent comment above
 	# the Rofi entries to see why we need this
-	if ('rofi' == pkgname):
-		return False
-	if ('rofi-full' == pkgname):
-		pkgname = 'rofi'
-		if (version != '1.7.9.1') and MAINTAINER_MODE:
-			print('Maintainer warning: please check if the Rofi hack is still needed', file=sys.stderr)
+	# seal331 05/11/2025 22:29 MSK: Rofi has since gotten an update and this
+	# is no longer needed (and is actually harmful since we don't check it
+	# because of this special case )
+	#if ('rofi' == pkgname):
+	#	return False
+	#if ('rofi-full' == pkgname):
+	#	pkgname = 'rofi'
+	#	if (version != '1.7.9.1') and MAINTAINER_MODE:
+	#		print('Maintainer warning: please check if the Rofi hack is still needed', file=sys.stderr)
 
 	# seal331 03/06/2025 20:41 MSK: libime-kenlm is a submodule, not a
         # package itself
@@ -408,14 +418,55 @@ include_regex = "^1\\\\..*"
 
 	# seal331 29/08/2025 00:37 MSK: Repology has a different name for Intel
 	# OneVPL too, and Arch doesn't ship an up-to-date version
+	# seal331 05/11/2025 22:33 MSK: and now Fedora is out of date
 	if ('intel-onevpl' == pkgname):
 		pkgname = 'vpl-gpu-rt'
-		repo = 'fedora_rawhide'
+		repo = 't2'
 
 	# seal331 29/08/2025 00:48 MSK: GLideN64 is actually a separate Git
 	# repo
 	if ('gliden64' == pkgname):
 		gitstuff.append(pkgname)
+
+	# seal331 05/11/2025 22:24 MSK: LADSPA-SDK is called just ladspa on
+	# Repology
+	if ('ladspa-sdk' == pkgname):
+		pkgname = 'ladspa'
+
+	# seal331 05/11/2025 22:26 MSK: noise-suppression is called a different
+	# name on Repology
+	if ('noise-suppression' == pkgname):
+		pkgname = 'noise-suppression-for-voice'
+
+	# seal331 05/11/2025 22:27 MSK: awww is called by its old name on Repology
+	if ('awww' == pkgname):
+		pkgname = 'swww'
+
+	# seal331 05/11/2025 22:28 MSK: hypr-udis86 is just a submodule
+	if ('hypr-udis86' == pkgname):
+		return False
+
+	# seal331 05/11/2025 22:51 MSK: apply a hack similar to inxi for wlroots
+	# same shit happened there
+	# seal331 05/11/2025 22:57 MSK: except we also have to apply a second hack
+	# in order to not fall down the "this is a Git repo" special case
+	if ('wlroots-minor' == pkgname):
+		TMP_wlroots_minor = version
+		return False
+	if ('wlroots' == pkgname):
+		if TMP_wlroots_minor == 'PLCHLDR':
+			print('ERROR: something broke with wlroots minor handler', file=sys.stderr)
+			sys.exit(1)
+		version = version.replace('&wlroots-minor;', TMP_wlroots_minor)
+		print(f'Currently parsing {pkgname}')
+		tomlout.write(f'''[{pkgname}]
+source = "repology"
+repology = "{pkgname}"
+repo = "{repo}"
+
+''')
+		os.system(f'nvtake -c lfsqol.toml {pkgname}={version}')
+		return False
 
 	# seal331 22/05/2025 21:27 MSK: -minor stuff is usually nicer-looking
 	# Git commit abbreviations, we check the git stuff separately
