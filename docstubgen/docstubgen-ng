@@ -1,16 +1,9 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC2016,SC2068
 
 
-# Quick doc stub generator script.
-# (C) Seal Sealy, Tox, 2025
-
-
-prefix=#prefix#
-libexecdir=#libexecdir#
-
-
-# = A predefined list of common directories exempt from classification under
-# installed directories
+# = A list of common directories exempt from classification under installed
+# directories
 #
 # For use with `collect_dirs()`
 common_dirs=(
@@ -21,6 +14,7 @@ common_dirs=(
     usr/bin
     usr/libexec
     usr/include
+    usr/sbin
     usr/share
     usr/share/doc
     usr/share/man
@@ -46,7 +40,7 @@ is_lib() {
 
 # = Determine whether a given file is a program
 #
-# A program is defined as an excecutable file directly under a directory
+# A program is defined as an executable file directly under a directory
 # '/bin/'.
 #
 # Note this function does not check whether a directory or file is passed. A
@@ -59,6 +53,7 @@ is_prog() {
     [[ $1 =~ /bin/[^\/]+$ ]] &&
         [ -x "$1" ]
 }
+
 
 # = Determine whether a given file is firmware
 #
@@ -94,16 +89,22 @@ is_misc() {
 
 
 # = Print usage to stderr and exit with code 2
-#
-# == Notes
-# This is technically an incompatibility with the original docstubgen, which
-# exited with code 1. The more standard 2 is preferred here.
 usage() {
-    cat >&2 << .
-Usage: $0 pkgname folder1 <folder2> <folder3> ...
-Reference docstubgen(1) for environment variables
-.
+    cat >&2 << EOF
+Usage: $0 <PACKAGE_NAME> <DESTDIR>
+
+Reference docstubgen(1) for detailed documentation
+EOF
     exit 2
+}
+
+
+# = Print version to stderr and exit with code 0
+version() {
+    cat << EOF
+docstubgen-ng 0.0.0-dev
+EOF
+    exit 0
 }
 
 
@@ -111,7 +112,9 @@ Reference docstubgen(1) for environment variables
 #
 # Prints $1 to stderr, prefixed by 'DEBUG:'
 dbg() {
-    echo "DEBUG: $1" >&2
+    if [ -n "${DOCSTUBGEN_DEBUG-}" ]; then
+        echo "DEBUG: $1" >&2
+    fi
 }
 
 
@@ -125,7 +128,6 @@ dbg() {
 join_array() {
     local arr=("$@")
     local n="${#arr[@]}"
-
 
     case $n in
         0)  echo "None"                     ;;
@@ -152,15 +154,17 @@ join_array() {
 # == Returns
 # A sorted array of directories
 collect_dirs() {
+    local destdir="${1:?}"
     local dirlist
     local IFS=$'\n'
 
     # Find leaf directories (unix filesystems only)
     # https://stackoverflow.com/questions/4269798/use-gnu-find-to-show-only-the-leaf-directories
     #
-    # Note this does not find symlinks, and doing so is pretty complex
+    # NOTE: This does not find symlinks, and doing so is pretty complex, so
+    # `collect_dirs()` does not discover symlinks
     readarray -t dirlist < <(
-        find "${1:?}" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -type d -links 2
+        find "$destdir" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -type d -links 2
     )
 
     # This ugly mess iterates over dirlist, and over common_dirs to determine
@@ -168,17 +172,27 @@ collect_dirs() {
     # not an element of $common_dirs.
     local trimmed_dirlist=()
     for dir in "${dirlist[@]}"; do
+        dir="${dir#*"${destdir}"}"
         local retain=true
         for cdir in "${common_dirs[@]}"; do
-            if [[ ${dir#*/} = "$cdir" ]]; then
+            dbg "\$cdir = $cdir"
+            dbg "\$dir  = $dir"
+            if [[ $dir =~ ^/$cdir ]]; then
+                dbg "matched $dir against common dir $cdir"
                 retain=false
                 break
             fi
         done
-        $retain && trimmed_dirlist+=("$dir")
+
+        dbg "\$retain is set to $retain"
+        if $retain; then
+            trimmed_dirlist+=("$dir")
+        fi
     done
 
-    printf "%s\n" "${trimmed_dirlist[@]}" | sort
+    if [ "${#trimmed_dirlist[@]}" -gt 0 ]; then
+        printf "%s\n" "${trimmed_dirlist[@]}" | sort
+    fi
 }
 
 
@@ -190,12 +204,13 @@ collect_dirs() {
 # == Returns
 # filelist  : array (sorted)
 collect_files() {
+    local destdir="${1:?}"
     local filelist
     local IFS=$'\n'
 
     # Collect files and symlinks to files
     readarray -t filelist < <(
-        find "${1:?}" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -type f -o -type l -xtype f
+        find "$destdir" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -type f -o -type l -xtype f
     )
 
     printf "%s\n" "${filelist[@]}" | sort
@@ -211,20 +226,23 @@ collect_files() {
 # == Returns
 # liblist   : array (sorted)
 collect_libs() {
+    local destdir="${1:?}"
     local liblist
     local filelist
     local IFS=$'\n'
 
-    readarray -t filelist < <(collect_files "${1:?}")
+    readarray -t filelist < <(collect_files "$destdir")
 
     liblist=()
     for f in "${filelist[@]}"; do
         if is_lib "$f"; then
-            liblist+=("$f")
+            liblist+=("${f#*"${destdir}"}")
         fi
     done
 
-    printf "%s\n" "${liblist[@]}" | sort
+    if [ "${#liblist[@]}" -gt 0 ]; then
+        printf "%s\n" "${liblist[@]}" | sort
+    fi
 }
 
 
@@ -239,20 +257,23 @@ collect_libs() {
 #
 # PERF: Performance could be improved by reusing filelist between functions
 collect_progs() {
+    local destdir="${1:?}"
     local proglist
     local filelist
     local IFS=$'\n'
 
-    readarray -t filelist < <(collect_files "${1:?}")
+    readarray -t filelist < <(collect_files "$destdir")
 
     proglist=()
     for f in "${filelist[@]}"; do
         if is_prog "$f"; then
-            proglist+=("$f")
+            proglist+=("${f#*"${destdir}"}")
         fi
     done
 
-    printf "%s\n" "${proglist[@]}" | sort
+    if [ "${#proglist[@]}" -gt 0 ]; then
+        printf "%s\n" "${proglist[@]}" | sort
+    fi
 }
 
 
@@ -267,20 +288,23 @@ collect_progs() {
 #
 # PERF: Performance could be improved by reusing filelist between functions
 collect_firm() {
+    local destdir="${1:?}"
     local firmlist
     local filelist
     local IFS=$'\n'
 
-    readarray -t filelist < <(collect_files "${1:?}")
+    readarray -t filelist < <(collect_files "$destdir")
 
     firmlist=()
     for f in "${filelist[@]}"; do
         if is_firm "$f"; then
-            firmlist+=("$f")
+            firmlist+=("${f#*"${destdir}"}")
         fi
     done
 
-    printf "%s\n" "${firmlist[@]}" | sort
+    if [ "${#firmlist[@]}" -gt 0 ]; then
+        printf "%s\n" "${firmlist[@]}" | sort
+    fi
 }
 
 
@@ -296,20 +320,29 @@ format_library() {
         *.so*) printf "%s"                "${lib/.so*/}" ;;
         *.jar) printf "%s (Java library)" "${lib/.jar/}" ;;
         *.dll) printf "%s (DLL)"          "${lib/.dll/}" ;;
-        *)     printf "%s"                "$lib"         ;; # Unreachable(?)
+        *)     printf "%s"                "$lib"         ;; # TODO: Other library extensions?
     esac
 }
 
 
 # = Formats all libraries
 #
-# This function takes an array, formats each individual library, intersperses
-# commas, and a final "and", and wraps the text to 80 characters, split at
-# spaces.
+# This function takes an array, formats each individual library, prints it on
+# its own line, intersperses commas, and adds an "and"
 format_all_libraries() {
-    local libs=()
-    for lib in "$@"; do [ ! -L "$lib" ] && libs+=("$(format_library "$lib")"); done
-    join_array "${libs[@]}"
+    case "$#" in
+        0 ) printf "          None\n" ;;
+        1 ) printf "          %s\n" "$(format_library "$1")" ;;
+        2 )
+            printf "          %s and\n" "$(format_library "$1")"
+            printf "          %s\n" "$(format_library "$2")"
+        ;;
+        * )
+            for name in "$@"; do
+                printf "          %s,\n" "$(format_library "$name")"
+            done | sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
+        ;;
+    esac
 }
 
 
@@ -318,7 +351,8 @@ format_all_libraries() {
 # This function takes a program as input and formats it. A formatted program is
 # its basename. Links are mentioned in parentheses.
 format_program() {
-    local original="$(readlink "$1")"
+    local original
+    original="$(readlink "$1")"
     local prog="${1##*/}"
 
     original="${original##*/}"
@@ -329,13 +363,22 @@ format_program() {
 
 # = Formats all programs
 #
-# This function takes an array, formats each individual program, intersperses
-# commas, and a final "and", and wraps the text to 80 characters, split at
-# spaces.
+# This function takes an array, formats each individual program, prints it on
+# its own line, intersperses commas, and adds an "and"
 format_all_programs() {
-    local progs=()
-    for prog in "$@"; do progs+=("$(format_program "$prog")"); done
-    join_array "${progs[@]}"
+    case "$#" in
+        0 ) printf "          None\n" ;;
+        1 ) printf "          %s\n" "$(format_library "$1")" ;;
+        2 )
+            printf "          %s and\n" "$(format_program "$1")"
+            printf "          %s\n" "$(format_program "$2")"
+        ;;
+        * )
+            for name in "$@"; do
+                printf "          %s,\n" "$(format_program "$name")"
+            done | sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
+        ;;
+    esac
 }
 
 
@@ -347,7 +390,8 @@ format_all_programs() {
 # TODO: Create a function called `format_generic()` and refactor
 # `format_firmware()` and `format_program()` to use it.
 format_firmware() {
-    local original="$(readlink "$1")"
+    local original
+    original="$(readlink "$1")"
     local firm="${1##*/}"
 
     original="${original##*/}"
@@ -355,15 +399,25 @@ format_firmware() {
     [ -n "$original" ] && printf " (link to %s)" "$original"
 }
 
+
 # = Formats all firmware
 #
-# This function takes an array, formats each individual firmware file,
-# intersperses commas, and a final "and", and wraps the text to 80 characters,
-# split at spaces.
+# This function takes an array, formats each individual firmware, prints it on
+# its own line, intersperses commas, and adds an "and"
 format_all_firmware() {
-    local firms=()
-    for firm in "$@"; do firms+=("$(format_firmware "$firm")"); done
-    join_array "${firms[@]}"
+    case "$#" in
+        0 ) printf "          None\n" ;;
+        1 ) printf "          %s\n" "$(format_library "$1")" ;;
+        2 )
+            printf "          %s and\n" "$(format_firmware "$1")"
+            printf "          %s\n" "$(format_firmware "$2")"
+        ;;
+        * )
+            for name in "$@"; do
+                printf "          %s,\n" "$(format_firmware "$name")"
+            done | sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
+        ;;
+    esac
 }
 
 
@@ -372,50 +426,159 @@ format_all_firmware() {
 # This function does not account for links as they aren't detected by
 # `collect_dirs()` anyway.
 format_directory() {
-    printf "%s" "${1#*/}"
+    printf "%s" "$1"
 }
 
 
 # = Formats all directories
 #
-# This function takes an array, formats each individual direrctory, intersperses
-# commas, and a final "and", and wraps the text to 80 characters, split at
-# spaces.
+# This function takes an array, formats each individual directory, prints it on
+# its own line, intersperses commas, and adds an "and"
 format_all_directories() {
-    local dirs=()
-    for dir in "$@"; do dirs+=("$(format_directory "$dir")"); done
-    join_array "${dirs[@]}"
+    case "$#" in
+        0 ) printf "          None\n" ;;
+        1 ) printf "          %s\n" "$(format_directory "$1")" ;;
+        2 )
+            printf "          %s and\n" "$(format_directory "$1")"
+            printf "          %s\n" "$(format_directory "$2")"
+        ;;
+        * )
+            for name in "$@"; do
+                printf "          %s,\n" "$(format_directory "$name")"
+            done | sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
+        ;;
+    esac
 }
 
 
-# Usage:
-#
-# ```
-# docstubgen-ng package_name DESTDIR
-# ```
-main() {
-    # readarray -t filelist < <(collect_files "test")
-    # printf "\nFILES:\n"
-    # printf "%s\n" "${filelist[@]}"
+# TODO: Partition main into various helper functions because this is kind of a
+# mess
+# = Main
 
-    readarray -t proglist < <(collect_progs "${2:?}")
-    printf "Installed Programs: "
-    format_all_programs "${proglist[@]}" | fold -sw 80
+if [ -n "${DOCSTUBGEN_DEBUG-}" ]; then
+    set -x
+fi
 
-    readarray -t firmlist < <(collect_firm "${2:?}")
+for arg in "$@"; do
+    case "$arg" in
+        -h | --help ) usage ;;
+        -V | --version ) version ;;
+    esac
+done
+
+if [ "$#" -lt 2 ]; then
+    usage
+fi
+
+package="$1"
+destdir="$2"
+
+readarray -t proglist < <(collect_progs "$destdir")
+readarray -t firmlist < <(collect_firm "$destdir")
+readarray -t liblist < <(collect_libs "$destdir")
+readarray -t dirlist < <(collect_dirs "$destdir")
+
+cat << EOF
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+EOF
+if [ ${#firmlist[@]} -gt 0 ]; then
+    dbg "Firmlist has ${#firmlist[@]} entries"
+cat << EOF
+      <segtitle>Installed Firmware</segtitle>
+EOF
+fi
+cat << EOF
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+EOF
+
+    format_all_programs ${proglist[@]}
+cat << EOF
+        </seg>
+        <seg>
+EOF
+
     if [ ${#firmlist[@]} -gt 0 ]; then
-        printf "Installed Firmware: "
-        format_all_firmware "${firmlist[@]}" | fold -sw 80
+        format_all_firmware ${firmlist[@]}
+cat << EOF
+        </seg>
+        <seg>
+EOF
     fi
 
-    readarray -t liblist < <(collect_libs "${2:?}")
-    printf "Installed Libraries: "
-    format_all_libraries "${liblist[@]}" | fold -sw 80
+    format_all_libraries ${liblist[@]}
+cat << EOF
+        </seg>
+        <seg>
+EOF
 
-    readarray -t dirlist < <(collect_dirs "${2:?}")
-    printf "Installed Directories: "
-    format_all_directories "${dirlist[@]}" | fold -sw 80
-}
+    format_all_directories ${dirlist[@]}
+cat << EOF
+        </seg>
+EOF
 
+cat << EOF
+      </seglistitem>
+    </segmentedlist>
 
-main "$@"
+EOF
+
+# TODO: Probably only print this if there's something to document
+cat << EOF
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+EOF
+
+for prog in "${proglist[@]}"; do
+prog="${prog##*/}"
+cat << EOF
+      <varlistentry id="$prog">
+        <term><command>$prog</command></term>
+        <listitem>
+          <para>
+            <!-- TODO:  --> Description for $prog
+          </para>
+          <indexterm zone="$package $prog">
+            <primary sortas="b-$prog">$prog</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+EOF
+done
+
+for lib in "${liblist[@]}"; do
+lib="${lib##*/}"
+cat << EOF
+      <varlistentry id="$lib">
+        <term><filename class="libraryfile">$lib</filename></term>
+        <listitem>
+          <para>
+            <!-- TODO:  --> Description for $lib
+          </para>
+          <indexterm zone="$package $lib">
+            <primary sortas="c-$lib">$lib</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+EOF
+done
+
+cat << EOF
+    </variablelist>
+
+  </sect2>
+
+</sect1>
+EOF
