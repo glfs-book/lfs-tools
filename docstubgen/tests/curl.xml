@@ -1,0 +1,85 @@
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          curl,
+          curl-config, and
+          wcurl
+        </seg>
+        <seg>
+          libcurl
+        </seg>
+        <seg>
+          /usr/doc/curl-8.17.0/examples,
+          /usr/include/curl,
+          /usr/lib64/pkgconfig,
+          /usr/man/man1, and
+          /usr/man/man3
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="curl">
+        <term><command>curl</command></term>
+        <listitem>
+          <para>
+            <!-- TODO:  --> Description for curl
+          </para>
+          <indexterm zone="curl curl">
+            <primary sortas="b-curl">curl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="curl-config">
+        <term><command>curl-config</command></term>
+        <listitem>
+          <para>
+            <!-- TODO:  --> Description for curl-config
+          </para>
+          <indexterm zone="curl curl-config">
+            <primary sortas="b-curl-config">curl-config</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="wcurl">
+        <term><command>wcurl</command></term>
+        <listitem>
+          <para>
+            <!-- TODO:  --> Description for wcurl
+          </para>
+          <indexterm zone="curl wcurl">
+            <primary sortas="b-wcurl">wcurl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libcurl">
+        <term><filename class="libraryfile">libcurl</filename></term>
+        <listitem>
+          <para>
+            <!-- TODO:  --> Description for libcurl
+          </para>
+          <indexterm zone="curl libcurl">
+            <primary sortas="c-libcurl">libcurl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

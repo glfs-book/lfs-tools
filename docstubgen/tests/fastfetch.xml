@@ -1,0 +1,56 @@
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          fastfetch and
+          flashfetch
+        </seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          None
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="fastfetch">
+        <term><command>fastfetch</command></term>
+        <listitem>
+          <para>
+            <!-- TODO:  --> Description for fastfetch
+          </para>
+          <indexterm zone="fastfetch fastfetch">
+            <primary sortas="b-fastfetch">fastfetch</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="flashfetch">
+        <term><command>flashfetch</command></term>
+        <listitem>
+          <para>
+            <!-- TODO:  --> Description for flashfetch
+          </para>
+          <indexterm zone="fastfetch flashfetch">
+            <primary sortas="b-flashfetch">flashfetch</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
