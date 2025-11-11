@@ -7,21 +7,29 @@
 #
 # For use with `collect_dirs()`
 common_dirs=(
-    usr
-    usr/lib
-    usr/lib/firmware
-    usr/lib/pkgconfig
-    usr/bin
-    usr/libexec
-    usr/include
-    usr/sbin
-    usr/share
-    usr/share/doc
-    usr/share/man
-    usr/share/aclocal
-    etc
-    var
-    var/cache
+    /usr
+    /usr/lib
+    /usr/lib/firmware
+    /usr/lib/pkgconfig
+    /usr/bin
+    /usr/libexec
+    /usr/include
+    /usr/sbin
+    /usr/share
+    /usr/share/doc
+    /usr/share/man
+    /usr/share/man/man1
+    /usr/share/man/man2
+    /usr/share/man/man3
+    /usr/share/man/man4
+    /usr/share/man/man5
+    /usr/share/man/man6
+    /usr/share/man/man7
+    /usr/share/man/man8
+    /usr/share/aclocal
+    /etc
+    /var
+    /var/cache
 )
 
 
@@ -34,7 +42,8 @@ common_dirs=(
 # 0 => file is a library
 # 1 => file is not a library
 is_lib() {
-    [[ $1 =~ \.(a$|dll$|jar$|so) ]]
+    [[ $1 =~ \.(a$|dll$|jar$|so) ]] &&
+        [ ! -L "$1" ]
 }
 
 
@@ -177,7 +186,7 @@ collect_dirs() {
         for cdir in "${common_dirs[@]}"; do
             dbg "\$cdir = $cdir"
             dbg "\$dir  = $dir"
-            if [[ $dir =~ ^/$cdir ]]; then
+            if [[ $dir == $cdir ]]; then
                 dbg "matched $dir against common dir $cdir"
                 retain=false
                 break
@@ -316,11 +325,24 @@ collect_firm() {
 format_library() {
     local lib="${1##*/}"
     case "$lib" in
-        *.a)   printf "%s (static)"       "${lib/.a/}"   ;;
-        *.so*) printf "%s"                "${lib/.so*/}" ;;
-        *.jar) printf "%s (Java library)" "${lib/.jar/}" ;;
-        *.dll) printf "%s (DLL)"          "${lib/.dll/}" ;;
-        *)     printf "%s"                "$lib"         ;; # TODO: Other library extensions?
+        *.a)   printf "%s (static)"       "${lib%.a}"   ;;
+        *.so*) printf "%s"                "${lib%.so*}" ;;
+        *.jar) printf "%s (Java library)" "${lib%.jar}" ;;
+        *.dll) printf "%s (DLL)"          "${lib%.dll}" ;;
+        *)     printf "%s"                "$lib"        ;; # TODO: Other library extensions?
+    esac
+}
+
+
+# = Format a library for display in the short descriptions section
+format_library_simple() {
+    local lib="${1##*/}"
+    case "$lib" in
+        *.a)   printf "%s" "${lib%.a}"   ;;
+        *.so*) printf "%s" "${lib%.so*}" ;;
+        *.jar) printf "%s" "${lib%.jar}" ;;
+        *.dll) printf "%s" "${lib%.dll}" ;;
+        *)     printf "%s" "$lib"        ;; # TODO: Other library extensions?
     esac
 }
 
@@ -558,7 +580,7 @@ EOF
 done
 
 for lib in "${liblist[@]}"; do
-lib="${lib##*/}"
+lib="$(format_library_simple "${lib##*/}")"
 cat << EOF
       <varlistentry id="$lib">
         <term><filename class="libraryfile">$lib</filename></term>
