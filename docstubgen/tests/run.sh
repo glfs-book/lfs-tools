@@ -25,12 +25,18 @@ teststatus() {
 for package in *.xml; do
     package="${package%.xml}"
 
-    tar -xf ${package}*.tar.?z &&
-        mv -f ${package}*/ ${package}_DESTDIR
+    if [ ! -d "${package}_DESTDIR" ]; then
+        tar -xf ${package}*.tar.?z &&
+            mv -f ${package}*/ ${package}_DESTDIR
+    fi
 done
 
-rm -rf install
-mkdir curl-slack && mv usr curl-slack
+# TODO: Get a better tarball for curl or use a different package
+# Curl hack
+if [ -d install ]; then
+    rm -rf install
+    mkdir -p curl-slack && mv usr curl-slack
+fi
 
 # Run tests
 passed=0
