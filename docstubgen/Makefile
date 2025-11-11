@@ -35,11 +35,11 @@ test: docstubgen-ng testdata
 docstubgen-ng.tar.gz: all
 	make
 	make DESTDIR=$$PWD/docstubgen-ng-0.0.0 install
-	tar czf docstubgen-ng.tar.gz -C docstubgen-ng-0.0.0 .
+	tar czf docstubgen-ng.tar.gz docstubgen-ng-0.0.0
 	rm -rf docstubgen-ng-0.0.0
 
 testdata: tests/fastfetch-linux-amd64.tar.gz \
-	tests/curl-linux-x86_64-glibc-8.17.0.tar.xz \
+	tests/curl-8.17.0-x86_64-1.tar.xz \
 	tests/docstubgen-ng.tar.gz
 
 tests/docstubgen-ng.tar.gz: docstubgen-ng.tar.gz
@@ -48,5 +48,5 @@ tests/docstubgen-ng.tar.gz: docstubgen-ng.tar.gz
 tests/fastfetch-linux-amd64.tar.gz:
 	curl -fsSL https://github.com/fastfetch-cli/fastfetch/releases/download/2.54.0/fastfetch-linux-amd64.tar.gz -o tests/fastfetch-linux-amd64.tar.gz
 
-tests/curl-linux-x86_64-glibc-8.17.0.tar.xz:
-	curl -fsSL https://github.com/stunnel/static-curl/releases/download/8.17.0/curl-linux-x86_64-glibc-8.17.0.tar.xz -o tests/curl-linux-x86_64-glibc-8.17.0.tar.xz
+tests/curl-8.17.0-x86_64-1.tar.xz:
+	curl -fsSL https://mirrors.slackware.com/slackware/slackware64-current/slackware64/n/curl-8.17.0-x86_64-1.txz -o tests/curl-8.17.0-x86_64-1.tar.xz
