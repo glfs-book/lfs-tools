@@ -1,55 +1,52 @@
 # Makefile for docstubgen
-# (C) Seal Sealy (seal331) 2025
+#
+# Copyright (c) 2025 The GLFS Development Team
 
-XSL_PATH ?= /usr/share/xml/docbook/xsl-stylesheets-nons-1.79.2
-XSLSTYLESHEET ?= $(XSL_PATH)/manpages/docbook.xsl
-DESTDIR ?=
-PREFIX ?= /usr/local
-BINDIR ?= bin
-LIBEXECDIR ?= libexec
-SHAREDIR ?= share
-OBJDIR ?= obj
+PREFIX=/usr
+BINDIR=$(PREFIX)/bin
+DATADIR=$(PREFIX)/share
+MANDIR=$(DATADIR)/man
 
-all: prep src
-src: prep build-docstubgen
-man: prep build-docstubgen-manpage
-install: src install-docstubgen install-docstubgen-compat-symlink
-install-man: man install-docstubgen-man
-World: all man install install-man
+all: docstubgen-ng.1
+
+docstubgen-ng.1: docstubgen-ng.1.scd
+	scdoc < docstubgen-ng.1.scd > docstubgen-ng.1
+
+install: install-docstubgen install-man
+
+install-docstubgen: docstubgen-ng
+	install -Dm755 docstubgen-ng -t $(DESTDIR)$(BINDIR)/
+
+install-man: docstubgen-ng.1
+	install -Dm644 docstubgen-ng.1 -t $(DESTDIR)$(MANDIR)/man1/
 
 clean:
-	rm -rf $(OBJDIR)
+	rm -f docstubgen-ng.1
+	rm -rf tests/*_DESTDIR tests/*.tar.?z
+	rm -f docstubgen-ng.tar.gz
 
-prep:
-	mkdir -p $(OBJDIR)
+lint: docstubgen-ng
+	typos docstubgen-ng docstubgen-ng.1.scd
+	shellcheck docstubgen-ng
 
-build-docstubgen-manpage: $(OBJDIR)/docstubgen.1
-$(OBJDIR)/docstubgen.1: docstubgen.1.xml FRC
-	xsltproc --output $(OBJDIR)/docstubgen.1 $(XSLSTYLESHEET) docstubgen.1.xml
+test: docstubgen-ng testdata
+	tests/run.sh
 
-build-docstubgen: $(OBJDIR)/docstubgen $(OBJDIR)/docstubgen-checkfile
-$(OBJDIR)/docstubgen: docstubgen FRC
-	cp docstubgen $(OBJDIR)
+docstubgen-ng.tar.gz: all
+	make
+	make DESTDIR=$$PWD/docstubgen-ng-0.0.0 install
+	tar czf docstubgen-ng.tar.gz -C docstubgen-ng-0.0.0 .
+	rm -rf docstubgen-ng-0.0.0
 
-$(OBJDIR)/docstubgen-checkfile: docstubgen-checkfile FRC
-	cp docstubgen-checkfile $(OBJDIR)
+testdata: tests/fastfetch-linux-amd64.tar.gz \
+	tests/curl-linux-x86_64-glibc-8.17.0.tar.xz \
+	tests/docstubgen-ng.tar.gz
 
-install-docstubgen:
-	sed -e 's=#prefix#="$(PREFIX)"=g' -e 's=#libexecdir#="$(LIBEXECDIR)"=g' -i $(OBJDIR)/docstubgen
-	install -m755 -d $(DESTDIR)$(PREFIX)/$(BINDIR)
-	install -m755 $(OBJDIR)/docstubgen $(DESTDIR)$(PREFIX)/$(BINDIR)
-	install -m755 -d $(DESTDIR)$(PREFIX)/$(LIBEXECDIR)
-	install -m755 $(OBJDIR)/docstubgen-checkfile $(DESTDIR)$(PREFIX)/$(LIBEXECDIR)
+tests/docstubgen-ng.tar.gz: docstubgen-ng.tar.gz
+	mv -f docstubgen-ng.tar.gz tests/
 
-install-docstubgen-man: build-docstubgen-manpage
-	install -m755 -d $(DESTDIR)$(PREFIX)/$(SHAREDIR)/man/man1
-	install -m644 $(OBJDIR)/docstubgen.1 $(DESTDIR)$(PREFIX)/$(SHAREDIR)/man/man1
+tests/fastfetch-linux-amd64.tar.gz:
+	curl -fsSL https://github.com/fastfetch-cli/fastfetch/releases/download/2.54.0/fastfetch-linux-amd64.tar.gz -o tests/fastfetch-linux-amd64.tar.gz
 
-install-docstubgen-compat-symlink: install-docstubgen
-	ln -sf docstubgen $(DESTDIR)$(PREFIX)/$(BINDIR)/generate-doc-stub.py
-
-test: build-docstubgen
-	sed -e 's=#prefix#="$(PREFIX)"=g' -e 's=#libexecdir#="$(LIBEXECDIR)"=g' -i $(OBJDIR)/docstubgen
-	tests/test.sh
-
-FRC:
+tests/curl-linux-x86_64-glibc-8.17.0.tar.xz:
+	curl -fsSL https://github.com/stunnel/static-curl/releases/download/8.17.0/curl-linux-x86_64-glibc-8.17.0.tar.xz -o tests/curl-linux-x86_64-glibc-8.17.0.tar.xz
