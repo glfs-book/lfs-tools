@@ -7,33 +7,40 @@
 #
 # For use with `collect_dirs()`
 common_dirs=(
-    /usr
-    /usr/lib
-    /usr/lib/firmware
-    /usr/lib/pkgconfig
-    /usr/bin
-    /usr/libexec
-    /usr/include
-    /usr/sbin
-    /usr/share
-    /usr/share/doc
-    /usr/share/man
-    /usr/share/man/man1
-    /usr/share/man/man2
-    /usr/share/man/man3
-    /usr/share/man/man4
-    /usr/share/man/man5
-    /usr/share/man/man6
-    /usr/share/man/man7
-    /usr/share/man/man8
-    /usr/share/aclocal
-    /etc
-    /var
-    /var/cache
+    usr
+    usr/lib
+    usr/lib/firmware
+    usr/lib/pkgconfig
+    usr/bin
+    usr/libexec
+    usr/include
+    usr/sbin
+    usr/share
+    usr/share/doc
+    usr/share/man
+    usr/share/man/man1
+    usr/share/man/man2
+    usr/share/man/man3
+    usr/share/man/man4
+    usr/share/man/man5
+    usr/share/man/man6
+    usr/share/man/man7
+    usr/share/man/man8
+    usr/share/aclocal
+    etc
+    var
+    var/cache
 )
 
 
 # = Determine whether a given file is a library
+#
+# A library is defined as a (non-symlink) file ending in one of the library
+# extensions:
+# - a
+# - dll
+# - jar
+# - so*
 #
 # This function uses a regex to check file extensions. It does not read magic
 # bytes.
@@ -50,7 +57,7 @@ is_lib() {
 # = Determine whether a given file is a program
 #
 # A program is defined as an executable file directly under a directory
-# '/bin/'.
+# '/bin/' or '/sbin/'.
 #
 # Note this function does not check whether a directory or file is passed. A
 # file should be passed.
@@ -59,7 +66,7 @@ is_lib() {
 # 0 => file is a program
 # 1 => file is not a program
 is_prog() {
-    [[ $1 =~ /bin/[^\/]+$ ]] &&
+    [[ $1 =~ /s?bin/[^\/]+$ ]] &&
         [ -x "$1" ]
 }
 
@@ -74,26 +81,6 @@ is_prog() {
 # 1 => file is not firmware
 is_firm() {
     [[ $1 =~ \.(bin|bseq|ucode)$ ]]
-}
-
-
-# TODO: Confirm intended behavior
-# = Check a file, returning 0 if the file should be documented(?)
-#
-# == Returns
-# 0 => file should be documented
-# 1 => file should not be documented
-is_misc() {
-    # JARs are actually internally ZIP archives... sigh
-    if [[ $1 =~ \.jar$ ]]; then
-        file "$1" | grep "Zip" &> /dev/null && return 0
-    fi
-
-    # ELF is binaries and shared libraries
-    # scripts is all kinds of misc .sh stuff and more
-    # ar archive is for static libs
-    # DLL is Windows DLLs
-    file "$1" | grep -E "DLL|ELF|JAR|script|ar archive" &> /dev/null || return 1
 }
 
 
@@ -127,33 +114,6 @@ dbg() {
 }
 
 
-# = Joins an array with commas and "and"
-#
-# == Returns
-# "None"              for arrays with 0 elements
-# "el1"               for arrays with 1 element
-# "el1 and el2"       for arrays with 2 elements
-# "el1, el2, and elN" for arrays with N elements
-join_array() {
-    local arr=("$@")
-    local n="${#arr[@]}"
-
-    case $n in
-        0)  echo "None"                     ;;
-        1)  echo "${arr[0]}"                ;;
-        2)  echo "${arr[0]} and ${arr[1]}"  ;;
-        *)
-            local joined=""
-            for ((i =0; i < n - 1; i++)); do
-                joined+="${arr[i]}, "
-            done
-            joined+="and ${arr[n-1]}"
-            echo "$joined"
-        ;;
-    esac
-}
-
-
 # = Collects subdirectories into an array
 #
 # This function collects all leaf directories under $1 which are not in
@@ -181,7 +141,11 @@ collect_dirs() {
     # not an element of $common_dirs.
     local trimmed_dirlist=()
     for dir in "${dirlist[@]}"; do
+        # Trim out destdir prefix and leading /
         dir="${dir#*"${destdir}"}"
+        dir="${dir#/}"
+
+        # Match against common dirs to determine retention
         local retain=true
         for cdir in "${common_dirs[@]}"; do
             dbg "\$cdir = $cdir"
@@ -200,7 +164,7 @@ collect_dirs() {
     done
 
     if [ "${#trimmed_dirlist[@]}" -gt 0 ]; then
-        printf "%s\n" "${trimmed_dirlist[@]}" | sort
+        printf "/%s\n" "${trimmed_dirlist[@]}" | sort
     fi
 }
 
@@ -236,14 +200,12 @@ collect_files() {
 # liblist   : array (sorted)
 collect_libs() {
     local destdir="${1:?}"
+    local contents=("$@")
     local liblist
-    local filelist
     local IFS=$'\n'
 
-    readarray -t filelist < <(collect_files "$destdir")
-
     liblist=()
-    for f in "${filelist[@]}"; do
+    for f in "${contents[@]}"; do
         if is_lib "$f"; then
             liblist+=("${f#*"${destdir}"}")
         fi
@@ -263,18 +225,14 @@ collect_libs() {
 #
 # == Returns
 # proglist  : array (sorted)
-#
-# PERF: Performance could be improved by reusing filelist between functions
 collect_progs() {
     local destdir="${1:?}"
+    local contents=("$@")
     local proglist
-    local filelist
     local IFS=$'\n'
 
-    readarray -t filelist < <(collect_files "$destdir")
-
     proglist=()
-    for f in "${filelist[@]}"; do
+    for f in "${contents[@]}"; do
         if is_prog "$f"; then
             proglist+=("${f#*"${destdir}"}")
         fi
@@ -294,18 +252,14 @@ collect_progs() {
 #
 # == Returns
 # A sorted array of unformatted firmware files
-#
-# PERF: Performance could be improved by reusing filelist between functions
 collect_firm() {
     local destdir="${1:?}"
+    local contents=("$@")
     local firmlist
-    local filelist
     local IFS=$'\n'
 
-    readarray -t filelist < <(collect_files "$destdir")
-
     firmlist=()
-    for f in "${filelist[@]}"; do
+    for f in "${contents[@]}"; do
         if is_firm "$f"; then
             firmlist+=("${f#*"${destdir}"}")
         fi
@@ -329,12 +283,14 @@ format_library() {
         *.so*) printf "%s"                "${lib%.so*}" ;;
         *.jar) printf "%s (Java library)" "${lib%.jar}" ;;
         *.dll) printf "%s (DLL)"          "${lib%.dll}" ;;
-        *)     printf "%s"                "$lib"        ;; # TODO: Other library extensions?
+        *)     printf "%s"                "$lib"        ;;
     esac
 }
 
 
 # = Format a library for display in the short descriptions section
+#
+# This effectively just prints the library without its extension
 format_library_simple() {
     local lib="${1##*/}"
     case "$lib" in
@@ -342,8 +298,17 @@ format_library_simple() {
         *.so*) printf "%s" "${lib%.so*}" ;;
         *.jar) printf "%s" "${lib%.jar}" ;;
         *.dll) printf "%s" "${lib%.dll}" ;;
-        *)     printf "%s" "$lib"        ;; # TODO: Other library extensions?
+        *)     printf "%s" "$lib"        ;;
     esac
+}
+
+
+# = Format the end of a new-line delimited list with commas and an 'and'
+#
+# Replaces ',' with ', and' on the second to last line. Removes ',' on the final
+# line.
+format_list_end() {
+    sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
 }
 
 
@@ -362,7 +327,7 @@ format_all_libraries() {
         * )
             for name in "$@"; do
                 printf "          %s,\n" "$(format_library "$name")"
-            done | sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
+            done | format_list_end
         ;;
     esac
 }
@@ -398,7 +363,7 @@ format_all_programs() {
         * )
             for name in "$@"; do
                 printf "          %s,\n" "$(format_program "$name")"
-            done | sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
+            done | format_list_end
         ;;
     esac
 }
@@ -437,7 +402,7 @@ format_all_firmware() {
         * )
             for name in "$@"; do
                 printf "          %s,\n" "$(format_firmware "$name")"
-            done | sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
+            done | format_list_end
         ;;
     esac
 }
@@ -467,39 +432,21 @@ format_all_directories() {
         * )
             for name in "$@"; do
                 printf "          %s,\n" "$(format_directory "$name")"
-            done | sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
+            done | format_list_end
         ;;
     esac
 }
 
+# = End and begin a <seg> tag in XML
+segseg() {
+cat << EOF
+        </seg>
+        <seg>
+EOF
+}
 
-# TODO: Partition main into various helper functions because this is kind of a
-# mess
-# = Main
 
-if [ -n "${DOCSTUBGEN_DEBUG-}" ]; then
-    set -x
-fi
-
-for arg in "$@"; do
-    case "$arg" in
-        -h | --help ) usage ;;
-        -V | --version ) version ;;
-    esac
-done
-
-if [ "$#" -lt 2 ]; then
-    usage
-fi
-
-package="$1"
-destdir="$2"
-
-readarray -t proglist < <(collect_progs "$destdir")
-readarray -t firmlist < <(collect_firm "$destdir")
-readarray -t liblist < <(collect_libs "$destdir")
-readarray -t dirlist < <(collect_dirs "$destdir")
-
+print_contents_header() {
 cat << EOF
   <sect2 role="content">
     <title>Contents</title>
@@ -520,39 +467,22 @@ cat << EOF
       <seglistitem>
         <seg>
 EOF
+}
 
-    format_all_programs ${proglist[@]}
+
+# = Print the footer for the contents section
+print_contents_footer() {
 cat << EOF
         </seg>
-        <seg>
-EOF
-
-    if [ ${#firmlist[@]} -gt 0 ]; then
-        format_all_firmware ${firmlist[@]}
-cat << EOF
-        </seg>
-        <seg>
-EOF
-    fi
-
-    format_all_libraries ${liblist[@]}
-cat << EOF
-        </seg>
-        <seg>
-EOF
-
-    format_all_directories ${dirlist[@]}
-cat << EOF
-        </seg>
-EOF
-
-cat << EOF
       </seglistitem>
     </segmentedlist>
 
 EOF
+}
 
-# TODO: Probably only print this if there's something to document
+
+# = Print the header for the short descriptions section
+print_shortdesc_header() {
 cat << EOF
     <variablelist>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
@@ -560,7 +490,30 @@ cat << EOF
       <?dbhtml list-presentation="table"?>
 
 EOF
+}
 
+
+# = Print the footer for the short descriptions section
+print_shortdesc_footer() {
+cat << EOF
+    </variablelist>
+
+EOF
+}
+
+
+# = Print the footer that ends the docstub
+print_docstub_footer() {
+cat << EOF
+  </sect2>
+
+</sect1>
+EOF
+}
+
+
+# = Print the templates for the descriptions of all programs
+describe_programs() {
 for prog in "${proglist[@]}"; do
 prog="${prog##*/}"
 cat << EOF
@@ -578,7 +531,11 @@ cat << EOF
 
 EOF
 done
+}
 
+
+# = Print the templates for the descriptions of all libraries
+describe_libraries() {
 for lib in "${liblist[@]}"; do
 lib="$(format_library_simple "${lib##*/}")"
 cat << EOF
@@ -596,11 +553,58 @@ cat << EOF
 
 EOF
 done
+}
 
-cat << EOF
-    </variablelist>
 
-  </sect2>
+# = Main
 
-</sect1>
-EOF
+[ -n "${DOCSTUBGEN_DEBUG-}" ] && : # set -x
+
+for arg in "$@"; do
+    case "$arg" in
+        -h | --help ) usage ;;
+        -V | --version ) version ;;
+    esac
+done
+
+[ "$#" -lt 2 ] && usage
+
+package="$1"
+destdir="$2"
+
+readarray -t contents < <(collect_files "$destdir")
+
+if [ -n "$DOCSTUBGEN_DEBUG" ]; then
+    dbg "Found contents: "
+    printf "%s\n" ${contents[@]} >&2
+fi
+
+readarray -t dirlist < <(collect_dirs "$destdir")
+readarray -t proglist < <(collect_progs "$destdir" "${contents[@]}")
+readarray -t firmlist < <(collect_firm "$destdir" "${contents[@]}")
+readarray -t liblist < <(collect_libs "$destdir" "${contents[@]}")
+unset contents
+
+print_contents_header
+
+format_all_programs ${proglist[@]} && segseg
+[ ${#firmlist[@]} -gt 0 ] && format_all_firmware ${firmlist[@]} && segseg
+format_all_libraries ${liblist[@]} && segseg
+format_all_directories ${dirlist[@]}
+
+print_contents_footer
+
+if [ "${#proglist[@]}" -eq 0 ] &&
+   [ "${#liblist[@]}"  -eq 0 ] &&
+   [ "${#firmlist[@]}" -eq 0 ]; then
+    print_docstub_footer
+    exit 0
+fi
+
+print_shortdesc_header
+
+describe_programs
+describe_libraries
+
+print_shortdesc_footer
+print_docstub_footer
