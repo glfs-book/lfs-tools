@@ -7,16 +7,21 @@
 #
 # For use with `collect_dirs()`
 common_dirs=(
+    etc
+    run
+    srv
     usr
+    usr/bin
+    usr/include
     usr/lib
     usr/lib/firmware
     usr/lib/pkgconfig
-    usr/bin
     usr/libexec
-    usr/include
     usr/sbin
     usr/share
+    usr/share/aclocal
     usr/share/doc
+    usr/share/info
     usr/share/man
     usr/share/man/man1
     usr/share/man/man2
@@ -26,8 +31,6 @@ common_dirs=(
     usr/share/man/man6
     usr/share/man/man7
     usr/share/man/man8
-    usr/share/aclocal
-    etc
     var
     var/cache
 )
@@ -271,6 +274,21 @@ collect_firm() {
 }
 
 
+# = Format generically for display in the docstub
+#
+# This function takes a file as input and formats it. A formatted file is its
+# basename. Links are mentioned in parentheses.
+format_generic() {
+    local original
+    original="$(readlink "$1")"
+    local file="${1##*/}"
+
+    original="${original##*/}"
+    printf "%s" "$file"
+    [ -n "$original" ] && printf " (link to %s)" "$original"
+}
+
+
 # = Format a library for display in the docstub
 #
 # This function takes a library as input and formats it according to its type. A
@@ -338,13 +356,7 @@ format_all_libraries() {
 # This function takes a program as input and formats it. A formatted program is
 # its basename. Links are mentioned in parentheses.
 format_program() {
-    local original
-    original="$(readlink "$1")"
-    local prog="${1##*/}"
-
-    original="${original##*/}"
-    printf "%s" "$prog"
-    [ -n "$original" ] && printf " (link to %s)" "$original"
+    format_generic "$1"
 }
 
 
@@ -355,7 +367,7 @@ format_program() {
 format_all_programs() {
     case "$#" in
         0 ) printf "          None\n" ;;
-        1 ) printf "          %s\n" "$(format_library "$1")" ;;
+        1 ) printf "          %s\n" "$(format_program "$1")" ;;
         2 )
             printf "          %s and\n" "$(format_program "$1")"
             printf "          %s\n" "$(format_program "$2")"
@@ -373,17 +385,8 @@ format_all_programs() {
 #
 # This function takes firmware as input and formats it. A formatted firmware
 # file is its basename. Links are mentioned in parentheses.
-#
-# TODO: Create a function called `format_generic()` and refactor
-# `format_firmware()` and `format_program()` to use it.
 format_firmware() {
-    local original
-    original="$(readlink "$1")"
-    local firm="${1##*/}"
-
-    original="${original##*/}"
-    printf "%s" "$firm"
-    [ -n "$original" ] && printf " (link to %s)" "$original"
+    format_generic "$1"
 }
 
 
@@ -394,7 +397,7 @@ format_firmware() {
 format_all_firmware() {
     case "$#" in
         0 ) printf "          None\n" ;;
-        1 ) printf "          %s\n" "$(format_library "$1")" ;;
+        1 ) printf "          %s\n" "$(format_firmware "$1")" ;;
         2 )
             printf "          %s and\n" "$(format_firmware "$1")"
             printf "          %s\n" "$(format_firmware "$2")"
