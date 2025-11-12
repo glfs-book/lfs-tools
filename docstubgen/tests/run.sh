@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# WARNING: This test suite is still in a very rough state
-
 set -u
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
@@ -26,8 +24,8 @@ for package in *.xml; do
     package="${package%.xml}"
 
     if [ ! -d "${package}_DESTDIR" ]; then
-        tar -xf ${package}*.tar.?z &&
-            mv -f ${package}*/ ${package}_DESTDIR
+        tar -xf "${package}"*.tar.?z &&
+            [ -d "${package}"*/ ] && mv -f "${package}"*/ "${package}_DESTDIR"
     fi
 done
 
@@ -35,7 +33,7 @@ done
 # Curl hack
 if [ -d install ]; then
     rm -rf install
-    mkdir -p curl-slack && mv usr curl-slack
+    mkdir -p curl_DESTDIR && mv usr curl_DESTDIR
 fi
 
 # Run tests
