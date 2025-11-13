@@ -186,7 +186,7 @@ collect_files() {
 
     # Collect files and symlinks to files
     readarray -t filelist < <(
-        find "$destdir" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -type f -o -type l -xtype f
+        find "$destdir" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -xtype f
     )
 
     printf "%s\n" "${filelist[@]}" | sort
@@ -202,7 +202,7 @@ collect_files() {
 # == Returns
 # liblist   : array (sorted)
 collect_libs() {
-    local destdir="${1:?}"
+    local destdir="${1:?}" && shift
     local contents=("$@")
     local liblist
     local IFS=$'\n'
@@ -229,7 +229,7 @@ collect_libs() {
 # == Returns
 # proglist  : array (sorted)
 collect_progs() {
-    local destdir="${1:?}"
+    local destdir="${1:?}" && shift
     local contents=("$@")
     local proglist
     local IFS=$'\n'
@@ -256,7 +256,7 @@ collect_progs() {
 # == Returns
 # A sorted array of unformatted firmware files
 collect_firm() {
-    local destdir="${1:?}"
+    local destdir="${1:?}" && shift
     local contents=("$@")
     local firmlist
     local IFS=$'\n'
