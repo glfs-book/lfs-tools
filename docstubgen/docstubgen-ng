@@ -151,8 +151,6 @@ collect_dirs() {
         # Match against common dirs to determine retention
         local retain=true
         for cdir in "${common_dirs[@]}"; do
-            dbg "\$cdir = $cdir"
-            dbg "\$dir  = $dir"
             if [[ $dir == $cdir ]]; then
                 dbg "matched $dir against common dir $cdir"
                 retain=false
@@ -160,7 +158,6 @@ collect_dirs() {
             fi
         done
 
-        dbg "\$retain is set to $retain"
         if $retain; then
             trimmed_dirlist+=("$dir")
         fi
