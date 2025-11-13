@@ -45,8 +45,7 @@ common_dirs=(
 # - jar
 # - so*
 #
-# This function uses a regex to check file extensions. It does not read magic
-# bytes.
+# This function checks file extensions. It does not read magic bytes.
 #
 # == Returns
 # 0 => file is a library
@@ -59,25 +58,23 @@ is_lib() {
 
 # = Determine whether a given file is a program
 #
-# A program is defined as an executable file directly under a directory
-# '/bin/' or '/sbin/'.
-#
-# Note this function does not check whether a directory or file is passed. A
-# file should be passed.
+# A program is defined as an executable script beginning with a shebang or an
+# ELF. This function checks magic bytes.
 #
 # == Returns
 # 0 => file is a program
 # 1 => file is not a program
 is_prog() {
-    [[ $1 =~ /s?bin/[^\/]+$ ]] &&
-        [ -x "$1" ]
+    [ -d "$1" ] && return 1
+    [ -x "$1" ] || return 1
+    is_lib "$1" && return 1
+    [[ $(head -c4 "$1") =~ ELF$|^#!/ ]]
 }
 
 
 # = Determine whether a given file is firmware
 #
-# This function uses a regex to check file extensions. It does not read magic
-# bytes.
+# This function checks file extensions. It does not read magic bytes.
 #
 # == Returns
 # 0 => file is firmware
@@ -234,6 +231,7 @@ collect_progs() {
     proglist=()
     for f in "${contents[@]}"; do
         if is_prog "$f"; then
+            dbg "Determined $f is a program"
             proglist+=("${f#*"${destdir}"}")
         fi
     done
