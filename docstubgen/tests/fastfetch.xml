@@ -15,11 +15,10 @@
           None
         </seg>
         <seg>
-          /usr/share/bash-completion/completions,
-          /usr/share/fastfetch/presets/examples,
-          /usr/share/fish/vendor_completions.d,
-          /usr/share/licenses/fastfetch, and
-          /usr/share/zsh/site-functions
+          /usr/share/fastfetch,
+          /usr/share/fastfetch/presets,
+          /usr/share/fastfetch/presets/examples, and
+          /usr/share/licenses/fastfetch
         </seg>
       </seglistitem>
     </segmentedlist>

@@ -16,9 +16,13 @@
           libcurl
         </seg>
         <seg>
+          /usr/doc,
+          /usr/doc/curl-8.17.0,
           /usr/doc/curl-8.17.0/examples,
           /usr/include/curl,
+          /usr/lib64,
           /usr/lib64/pkgconfig,
+          /usr/man,
           /usr/man/man1, and
           /usr/man/man3
         </seg>
