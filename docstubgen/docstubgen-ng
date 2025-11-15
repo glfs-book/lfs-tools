@@ -59,7 +59,8 @@ is_lib() {
 # = Determine whether a given file is a program
 #
 # A program is defined as an executable script beginning with a shebang or an
-# ELF. This function checks magic bytes.
+# ELF. This function checks magic bytes. Programs within doc directories are not
+# considered programs.
 #
 # == Returns
 # 0 => file is a program
@@ -68,6 +69,7 @@ is_prog() {
     [ -d "$1" ] && return 1
     [ -x "$1" ] || return 1
     is_lib "$1" && return 1
+    [[ $1 =~ /(doc)/ ]] && return 1
     [[ $(head -c4 "$1") =~ ELF$|^#!/ ]]
 }
 
