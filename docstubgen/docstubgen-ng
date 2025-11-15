@@ -2,37 +2,19 @@
 # shellcheck disable=SC2016,SC2068
 
 
-# = A list of common directories exempt from classification under installed
-# directories
+# = A list of common directory regexes exempt from classification under
+# installed directories
 #
 # For use with `collect_dirs()`
 common_dirs=(
-    etc
-    run
-    srv
-    usr
-    usr/bin
-    usr/include
-    usr/lib
-    usr/lib/firmware
-    usr/lib/pkgconfig
-    usr/libexec
-    usr/sbin
-    usr/share
-    usr/share/aclocal
-    usr/share/doc
-    usr/share/info
-    usr/share/man
-    usr/share/man/man1
-    usr/share/man/man2
-    usr/share/man/man3
-    usr/share/man/man4
-    usr/share/man/man5
-    usr/share/man/man6
-    usr/share/man/man7
-    usr/share/man/man8
-    var
-    var/cache
+    '^(etc|run|srv|usr|opt)$' # root dirs
+    '^(opt/.+|usr)/(s?bin|include|lib|libexec)$' # secondary dirs
+    '.+/lib/(firmware|pkgconfig)$' # lib dirs
+    '^(opt/.+|usr)/share$' # data root dir
+    '^(opt/.+|usr)/share/(doc|licenses|pkgconfig)$' # leaf data dirs
+    '^(opt/.+|usr)/share/(aclocal|locale|man).*$' # data dirs
+    '^(opt/.+|usr)/share/(bash-completion|fish|zsh).*$' # shell completion dirs
+    '^var(/cache)?$' # var dirs
 )
 
 
@@ -129,13 +111,9 @@ collect_dirs() {
     local dirlist
     local IFS=$'\n'
 
-    # Find leaf directories (unix filesystems only)
-    # https://stackoverflow.com/questions/4269798/use-gnu-find-to-show-only-the-leaf-directories
-    #
-    # NOTE: This does not find symlinks, and doing so is pretty complex, so
-    # `collect_dirs()` does not discover symlinks
+    # Find all directories
     readarray -t dirlist < <(
-        find "$destdir" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -type d -links 2
+        find "$destdir" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -xtype d
     )
 
     # This ugly mess iterates over dirlist, and over common_dirs to determine
@@ -150,7 +128,7 @@ collect_dirs() {
         # Match against common dirs to determine retention
         local retain=true
         for cdir in "${common_dirs[@]}"; do
-            if [[ $dir == $cdir ]]; then
+            if [[ $dir =~ $cdir ]]; then
                 dbg "matched $dir against common dir $cdir"
                 retain=false
                 break
