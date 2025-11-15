@@ -11,7 +11,7 @@ common_dirs=(
     '^(opt/.+|usr)/(s?bin|include|lib|libexec)$' # secondary dirs
     '.+/lib/(firmware|pkgconfig)$' # lib dirs
     '^(opt/.+|usr)/share$' # data root dir
-    '^(opt/.+|usr)/share/(doc|licenses|pkgconfig)$' # leaf data dirs
+    '^(opt/.+|usr)/share/(doc|licenses|pkgconfig|applications)$' # leaf data dirs
     '^(opt/.+|usr)/share/(aclocal|locale|man).*$' # data dirs
     '^(opt/.+|usr)/share/(bash-completion|fish|zsh).*$' # shell completion dirs
     '^var(/cache)?$' # var dirs
