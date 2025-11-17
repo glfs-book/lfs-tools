@@ -15,9 +15,7 @@
           None
         </seg>
         <seg>
-          /usr/share/fastfetch,
-          /usr/share/fastfetch/presets,
-          /usr/share/fastfetch/presets/examples, and
+          /usr/share/fastfetch and
           /usr/share/licenses/fastfetch
         </seg>
       </seglistitem>

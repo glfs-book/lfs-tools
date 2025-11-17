@@ -88,13 +88,17 @@ EOF
 }
 
 
+# = Helper function to check if we're in debug mode
+is_debug() {
+    [ -n "${DOCSTUBGEN_DEBUG-}" ]
+}
+
+
 # = Helper function for debugging
 #
 # Prints $1 to stderr, prefixed by 'DEBUG:'
-dbg() {
-    if [ -n "${DOCSTUBGEN_DEBUG-}" ]; then
-        echo "DEBUG: $1" >&2
-    fi
+dprint() {
+    is_debug && printf "DEBUG: %s\n" "$1" >&2
 }
 
 
@@ -119,7 +123,7 @@ collect_dirs() {
     # This ugly mess iterates over dirlist, and over common_dirs to determine
     # whether a directory should be retained. A directory should be retained if
     # not an element of $common_dirs.
-    local trimmed_dirlist=()
+    local trimmed_dirlist1=()
     for dir in "${dirlist[@]}"; do
         # Trim out destdir prefix and leading /
         dir="${dir#*"${destdir}"}"
@@ -129,19 +133,41 @@ collect_dirs() {
         local retain=true
         for cdir in "${common_dirs[@]}"; do
             if [[ $dir =~ $cdir ]]; then
-                dbg "matched $dir against common dir $cdir"
+                dprint "matched $dir against common dir $cdir"
                 retain=false
                 break
             fi
         done
 
         if $retain; then
-            trimmed_dirlist+=("$dir")
+            trimmed_dirlist1+=("$dir")
         fi
     done
 
-    if [ "${#trimmed_dirlist[@]}" -gt 0 ]; then
-        printf "/%s\n" "${trimmed_dirlist[@]}" | sort
+    dprint "determined first trimmed dirlist:"
+    is_debug && printf " - /%s\n" "${trimmed_dirlist1[@]}" | sort >&2
+
+    # Remove directories with parents, i.e. retain master directories
+    local trimmed_dirlist2=()
+    for dir1 in "${trimmed_dirlist1[@]}"; do
+        local retain=true
+        for dir2 in "${trimmed_dirlist1[@]}"; do
+            if [[ $dir1 =~ ^$dir2/.+$ ]]; then
+                dprint "matched $dir1 against parent $dir2"
+                retain=false
+                break
+            fi
+        done
+
+        if $retain; then
+            trimmed_dirlist2+=("$dir1")
+        fi
+    done
+
+    if [ "${#trimmed_dirlist2[@]}" -gt 0 ]; then
+        dprint "determined final trimmed dirlist:"
+        is_debug && printf " - /%s\n" "${trimmed_dirlist2[@]}" | sort >&2
+        printf "/%s\n" "${trimmed_dirlist2[@]}" | sort
     fi
 }
 
@@ -211,7 +237,7 @@ collect_progs() {
     proglist=()
     for f in "${contents[@]}"; do
         if is_prog "$f"; then
-            dbg "Determined $f is a program"
+            dprint "Determined $f is a program"
             proglist+=("${f#*"${destdir}"}")
         fi
     done
@@ -433,7 +459,7 @@ cat << EOF
       <segtitle>Installed Programs</segtitle>
 EOF
 if [ ${#firmlist[@]} -gt 0 ]; then
-    dbg "Firmlist has ${#firmlist[@]} entries"
+    dprint "Firmlist has ${#firmlist[@]} entries"
 cat << EOF
       <segtitle>Installed Firmware</segtitle>
 EOF
@@ -552,10 +578,8 @@ destdir="$2"
 
 readarray -t contents < <(collect_files "$destdir")
 
-if [ -n "$DOCSTUBGEN_DEBUG" ]; then
-    dbg "Found contents: "
-    printf "%s\n" ${contents[@]} >&2
-fi
+dprint "Found contents: "
+is_debug && printf "%s\n" ${contents[@]} >&2
 
 readarray -t dirlist < <(collect_dirs "$destdir")
 readarray -t proglist < <(collect_progs "$destdir" "${contents[@]}")
