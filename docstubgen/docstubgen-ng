@@ -527,7 +527,7 @@ cat << EOF
         <term><command>$prog</command></term>
         <listitem>
           <para>
-            <!-- TODO:  --> Description for $prog
+            <!-- TODO: Description for $prog -->
           </para>
           <indexterm zone="$package $prog">
             <primary sortas="b-$prog">$prog</primary>
@@ -549,7 +549,7 @@ cat << EOF
         <term><filename class="libraryfile">$lib</filename></term>
         <listitem>
           <para>
-            <!-- TODO:  --> Description for $lib
+            <!-- TODO: Description for $lib -->
           </para>
           <indexterm zone="$package $lib">
             <primary sortas="c-$lib">$lib</primary>
@@ -559,6 +559,13 @@ cat << EOF
 
 EOF
 done
+}
+
+
+print_version_reminder() {
+cat << EOF
+<!-- TODO: Check for hardcoded versions in docstub -->
+EOF
 }
 
 
@@ -591,6 +598,7 @@ readarray -t firmlist < <(collect_firm "$destdir" "${contents[@]}")
 readarray -t liblist < <(collect_libs "$destdir" "${contents[@]}")
 unset contents
 
+print_version_reminder
 print_contents_header
 
 format_all_programs ${proglist[@]} && segseg
