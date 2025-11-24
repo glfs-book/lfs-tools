@@ -41,23 +41,26 @@ is_lib() {
 
 # = Determine whether a given file is a program
 #
-# A program is defined as an executable script beginning with a shebang or an
-# ELF. This function checks magic bytes. Programs within doc directories are not
-# considered programs.
+# A program is defined as an executable script beginning with a shebang or ELF
+# magic bytes. Programs within doc directories are not considered programs.
 #
 # == Returns
 # 0 => file is a program
 # 1 => file is not a program
 is_prog() {
-    [ -d "$1" ] && return 1
-    [ -x "$1" ] || return 1
-    is_lib "$(realpath "$1")" && return 1
-    [[ $1 =~ /(doc)/ ]] && return 1
-    [[ $(head -c4 "$1") =~ ELF$|^#!/ ]]
+    [ -x "$1" ] || return 1 # file is not executable
+    is_lib "$(realpath "$1")" && return 1 # file is a library
+    [[ $1 =~ /(doc)/ ]] && return 1 # file is part of documentation
+    [[ $(head -c4 "$1") =~ ELF$|^#!/ ]] # file is a program
 }
 
 
 # = Determine whether a given file is firmware
+#
+# A firmware file is defined as a file ending in one of the firmware extensions:
+# - bin
+# - bseq
+# - ucode
 #
 # This function checks file extensions. It does not read magic bytes.
 #
@@ -103,11 +106,12 @@ dprint() {
 }
 
 
-# = Collects subdirectories into an array
+# = Collects directories in destdir into an array
 #
-# This function collects all leaf directories under $1 which are not in
-# $common_dirs, with a maximum recursion depth defined by
-# $DOCSTUBGEN_RECURSION_DEPTH, defaulting to 64.
+# This function collects all directories under destdir `$1`, with a maximum
+# recursion depth defined by `$DOCSTUBGEN_RECURSION_DEPTH`, defaulting to 64. It
+# then trims out the ones matched by `${common_dirs[@]}`, and then trims out
+# directories with parents, leaving only master directories.
 #
 # == Returns
 # A sorted array of directories
@@ -175,11 +179,11 @@ collect_dirs() {
 
 # = Collects files into an array
 #
-# This function collects all files under $1, with a maximum recursion depth
-# defined by $DOCSTUBGEN_RECURSION_DEPTH, defaulting to 64.
+# This function collects all files under the destdir `$1`, with a maximum
+# recursion depth defined by `$DOCSTUBGEN_RECURSION_DEPTH`, defaulting to 64.
 #
 # == Returns
-# filelist  : array (sorted)
+# A sorted array of files
 collect_files() {
     local destdir="${1:?}"
     local filelist
@@ -196,12 +200,11 @@ collect_files() {
 
 # = Collects libraries into an array
 #
-# This function collects all libraries (as defined in `is_lib()`) under $1, with
-# a maximum recursion depth defined by $DOCSTUBGEN_RECURSION_DEPTH, defaulting
-# to 64.
+# This function collects all libraries (as defined in `is_lib()`) in
+# `${contents[@]}`.
 #
 # == Returns
-# liblist   : array (sorted)
+# A sorted array of libraries
 collect_libs() {
     local destdir="${1:?}" && shift
     local contents=("$@")
@@ -223,12 +226,11 @@ collect_libs() {
 
 # = Collects programs into an array
 #
-# This function collects all programs (as defined in `is_prog()`) under $1, with
-# a maximum recursion depth defined by $DOCSTUBGEN_RECURSION_DEPTH, defaulting
-# to 64.
+# This function collects all programs (as defined in `is_prog()`) in
+# `${contents[@]}`.
 #
 # == Returns
-# proglist  : array (sorted)
+# A sorted array of programs
 collect_progs() {
     local destdir="${1:?}" && shift
     local contents=("$@")
@@ -251,9 +253,8 @@ collect_progs() {
 
 # = Collects firmware into an array
 #
-# This function collects all firmware (as defined in `is_firm()`) under $1, with
-# a maximum recursion depth defined by $DOCSTUBGEN_RECURSION_DEPTH, defaulting
-# to 64.
+# This function collects all firmware (as defined in `is_firm()`) in
+# `${contents[@]}`.
 #
 # == Returns
 # A sorted array of unformatted firmware files
@@ -582,6 +583,8 @@ readarray -t contents < <(collect_files "$destdir")
 dprint "Found contents: "
 is_debug && printf "%s\n" ${contents[@]} >&2
 
+# NOTE: `${contents[@]}` is a list of files; `collect_{progs,firm,libs}()` do not
+# account for directories.
 readarray -t dirlist < <(collect_dirs "$destdir")
 readarray -t proglist < <(collect_progs "$destdir" "${contents[@]}")
 readarray -t firmlist < <(collect_firm "$destdir" "${contents[@]}")
