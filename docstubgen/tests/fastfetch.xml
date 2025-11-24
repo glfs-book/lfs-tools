@@ -1,3 +1,4 @@
+<!-- TODO: Check for hardcoded versions in docstub -->
   <sect2 role="content">
     <title>Contents</title>
 
@@ -30,7 +31,7 @@
         <term><command>fastfetch</command></term>
         <listitem>
           <para>
-            <!-- TODO:  --> Description for fastfetch
+            <!-- TODO: Description for fastfetch -->
           </para>
           <indexterm zone="fastfetch fastfetch">
             <primary sortas="b-fastfetch">fastfetch</primary>
@@ -42,7 +43,7 @@
         <term><command>flashfetch</command></term>
         <listitem>
           <para>
-            <!-- TODO:  --> Description for flashfetch
+            <!-- TODO: Description for flashfetch -->
           </para>
           <indexterm zone="fastfetch flashfetch">
             <primary sortas="b-flashfetch">flashfetch</primary>

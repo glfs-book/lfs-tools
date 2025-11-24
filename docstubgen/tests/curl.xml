@@ -1,3 +1,4 @@
+<!-- TODO: Check for hardcoded versions in docstub -->
   <sect2 role="content">
     <title>Contents</title>
 
@@ -33,7 +34,7 @@
         <term><command>curl</command></term>
         <listitem>
           <para>
-            <!-- TODO:  --> Description for curl
+            <!-- TODO: Description for curl -->
           </para>
           <indexterm zone="curl curl">
             <primary sortas="b-curl">curl</primary>
@@ -45,7 +46,7 @@
         <term><command>curl-config</command></term>
         <listitem>
           <para>
-            <!-- TODO:  --> Description for curl-config
+            <!-- TODO: Description for curl-config -->
           </para>
           <indexterm zone="curl curl-config">
             <primary sortas="b-curl-config">curl-config</primary>
@@ -57,7 +58,7 @@
         <term><command>wcurl</command></term>
         <listitem>
           <para>
-            <!-- TODO:  --> Description for wcurl
+            <!-- TODO: Description for wcurl -->
           </para>
           <indexterm zone="curl wcurl">
             <primary sortas="b-wcurl">wcurl</primary>
@@ -69,7 +70,7 @@
         <term><filename class="libraryfile">libcurl</filename></term>
         <listitem>
           <para>
-            <!-- TODO:  --> Description for libcurl
+            <!-- TODO: Description for libcurl -->
           </para>
           <indexterm zone="curl libcurl">
             <primary sortas="c-libcurl">libcurl</primary>

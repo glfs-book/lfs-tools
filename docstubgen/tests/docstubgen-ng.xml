@@ -1,3 +1,4 @@
+<!-- TODO: Check for hardcoded versions in docstub -->
   <sect2 role="content">
     <title>Contents</title>
 
@@ -28,7 +29,7 @@
         <term><command>docstubgen-ng</command></term>
         <listitem>
           <para>
-            <!-- TODO:  --> Description for docstubgen-ng
+            <!-- TODO: Description for docstubgen-ng -->
           </para>
           <indexterm zone="docstubgen-ng docstubgen-ng">
             <primary sortas="b-docstubgen-ng">docstubgen-ng</primary>
