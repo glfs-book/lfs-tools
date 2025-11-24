@@ -14,6 +14,7 @@ common_dirs=(
     '^(opt/.+|usr)/share/(doc|licenses|pkgconfig|applications)$' # leaf data dirs
     '^(opt/.+|usr)/share/(aclocal|locale|man).*$' # data dirs
     '^(opt/.+|usr)/share/(bash-completion|fish|zsh).*$' # shell completion dirs
+    '^(opt/.+|usr)/lib/(cmake)$' # cmake stuff
     '^var(/cache)?$' # var dirs
 )
 
