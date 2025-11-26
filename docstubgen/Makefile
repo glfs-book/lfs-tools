@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2025 The GLFS Development Team
 
-.PHONY all install install-docstubgen install-man clean lint test testdata
+.PHONY: all install install-docstubgen install-man clean lint test testdata
 
 PREFIX=/usr
 BINDIR=$(PREFIX)/bin
