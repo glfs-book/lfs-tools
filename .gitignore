@@ -1,6 +1,9 @@
 genpkgcon/
 lfs-currency/
 docstubgen/obj/
+docstubgen/*.1
+docstubgen/tests/*_DESTDIR
+docstubgen/tests/*.tar.?z
 updcheck/versions_book.json~
 updcheck/gitcheck-upd.txt
 updcheck/versions_current.json

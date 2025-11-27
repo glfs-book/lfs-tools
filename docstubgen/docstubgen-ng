@@ -1,0 +1,632 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2016,SC2068
+
+
+# = A list of common directory regexes exempt from classification under
+# installed directories
+#
+# For use with `collect_dirs()`
+common_dirs=(
+    '^(etc|run|srv|usr|opt)$' # root dirs
+    '^(opt/.+|usr)/(s?bin|include|lib|libexec)$' # secondary dirs
+    '.+/lib/(firmware|pkgconfig)$' # lib dirs
+    '^(opt/.+|usr)/share$' # data root dir
+    '^(opt/.+|usr)/share/(doc|licenses|pkgconfig|applications)$' # leaf data dirs
+    '^(opt/.+|usr)/share/(aclocal|locale|man).*$' # data dirs
+    '^(opt/.+|usr)/share/(bash-completion|fish|zsh).*$' # shell completion dirs
+    '^(opt/.+|usr)/lib/(cmake)$' # cmake stuff
+    '^var(/cache)?$' # var dirs
+)
+
+
+# = Determine whether a given file is a library
+#
+# A library is defined as a (non-symlink) file ending in one of the library
+# extensions:
+# - a
+# - dll
+# - jar
+# - so*
+#
+# This function checks file extensions. It does not read magic bytes.
+#
+# == Returns
+# 0 => file is a library
+# 1 => file is not a library
+is_lib() {
+    [[ $1 =~ \.(a$|dll$|jar$|so) ]] &&
+        [ ! -L "$1" ]
+}
+
+
+# = Determine whether a given file is a program
+#
+# A program is defined as an executable script beginning with a shebang or ELF
+# magic bytes. Programs within doc directories are not considered programs.
+#
+# == Returns
+# 0 => file is a program
+# 1 => file is not a program
+is_prog() {
+    [ -x "$1" ] || return 1 # file is not executable
+    is_lib "$(realpath "$1")" && return 1 # file is a library
+    [[ $1 =~ /(doc)/ ]] && return 1 # file is part of documentation
+    [[ $(head -c4 "$1") =~ ELF$|^#!/ ]] # file is a program
+}
+
+
+# = Determine whether a given file is firmware
+#
+# A firmware file is defined as a file ending in one of the firmware extensions:
+# - bin
+# - bseq
+# - ucode
+#
+# This function checks file extensions. It does not read magic bytes.
+#
+# == Returns
+# 0 => file is firmware
+# 1 => file is not firmware
+is_firm() {
+    [[ $1 =~ \.(bin|bseq|ucode)$ ]]
+}
+
+
+# = Print usage to stderr and exit with code 2
+usage() {
+    cat >&2 << EOF
+Usage: $0 <PACKAGE_NAME> <DESTDIR>
+
+Reference docstubgen(1) for detailed documentation
+EOF
+    exit 2
+}
+
+
+# = Print version to stderr and exit with code 0
+version() {
+    cat << EOF
+docstubgen-ng 0.0.0-dev
+EOF
+    exit 0
+}
+
+
+# = Helper function to check if we're in debug mode
+is_debug() {
+    [ -n "${DOCSTUBGEN_DEBUG-}" ]
+}
+
+
+# = Helper function for debugging
+#
+# Prints $1 to stderr, prefixed by 'DEBUG:'
+dprint() {
+    is_debug && printf "DEBUG: %s\n" "$1" >&2
+}
+
+
+# = Collects directories in destdir into an array
+#
+# This function collects all directories under destdir `$1`, with a maximum
+# recursion depth defined by `$DOCSTUBGEN_RECURSION_DEPTH`, defaulting to 64. It
+# then trims out the ones matched by `${common_dirs[@]}`, and then trims out
+# directories with parents, leaving only master directories.
+#
+# == Returns
+# A sorted array of directories
+collect_dirs() {
+    local destdir="${1:?}"
+    local dirlist
+    local IFS=$'\n'
+
+    # Find all directories
+    readarray -t dirlist < <(
+        find "$destdir" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -xtype d
+    )
+
+    # This ugly mess iterates over dirlist, and over common_dirs to determine
+    # whether a directory should be retained. A directory should be retained if
+    # not an element of $common_dirs.
+    local trimmed_dirlist1=()
+    for dir in "${dirlist[@]}"; do
+        # Trim out destdir prefix and leading /
+        dir="${dir#*"${destdir}"}"
+        dir="${dir#/}"
+
+        # Match against common dirs to determine retention
+        local retain=true
+        for cdir in "${common_dirs[@]}"; do
+            if [[ $dir =~ $cdir ]]; then
+                dprint "matched $dir against common dir $cdir"
+                retain=false
+                break
+            fi
+        done
+
+        if $retain; then
+            trimmed_dirlist1+=("$dir")
+        fi
+    done
+
+    dprint "determined first trimmed dirlist:"
+    is_debug && printf " - /%s\n" "${trimmed_dirlist1[@]}" | sort >&2
+
+    # Remove directories with parents, i.e. retain master directories
+    local trimmed_dirlist2=()
+    for dir1 in "${trimmed_dirlist1[@]}"; do
+        local retain=true
+        for dir2 in "${trimmed_dirlist1[@]}"; do
+            if [[ $dir1 =~ ^$dir2/.+$ ]]; then
+                dprint "matched $dir1 against parent $dir2"
+                retain=false
+                break
+            fi
+        done
+
+        if $retain; then
+            trimmed_dirlist2+=("$dir1")
+        fi
+    done
+
+    if [ "${#trimmed_dirlist2[@]}" -gt 0 ]; then
+        dprint "determined final trimmed dirlist:"
+        is_debug && printf " - /%s\n" "${trimmed_dirlist2[@]}" | sort >&2
+        printf "/%s\n" "${trimmed_dirlist2[@]}" | sort
+    fi
+}
+
+
+# = Collects files into an array
+#
+# This function collects all files under the destdir `$1`, with a maximum
+# recursion depth defined by `$DOCSTUBGEN_RECURSION_DEPTH`, defaulting to 64.
+#
+# == Returns
+# A sorted array of files
+collect_files() {
+    local destdir="${1:?}"
+    local filelist
+    local IFS=$'\n'
+
+    # Collect files and symlinks to files
+    readarray -t filelist < <(
+        find "$destdir" -mindepth 1 -maxdepth "${DOCSTUBGEN_RECURSION_DEPTH:-64}" -xtype f
+    )
+
+    printf "%s\n" "${filelist[@]}" | sort
+}
+
+
+# = Collects libraries into an array
+#
+# This function collects all libraries (as defined in `is_lib()`) in
+# `${contents[@]}`.
+#
+# == Returns
+# A sorted array of libraries
+collect_libs() {
+    local destdir="${1:?}" && shift
+    local contents=("$@")
+    local liblist
+    local IFS=$'\n'
+
+    liblist=()
+    for f in "${contents[@]}"; do
+        if is_lib "$f"; then
+            liblist+=("${f#*"${destdir}"}")
+        fi
+    done
+
+    if [ "${#liblist[@]}" -gt 0 ]; then
+        printf "%s\n" "${liblist[@]}" | sort
+    fi
+}
+
+
+# = Collects programs into an array
+#
+# This function collects all programs (as defined in `is_prog()`) in
+# `${contents[@]}`.
+#
+# == Returns
+# A sorted array of programs
+collect_progs() {
+    local destdir="${1:?}" && shift
+    local contents=("$@")
+    local proglist
+    local IFS=$'\n'
+
+    proglist=()
+    for f in "${contents[@]}"; do
+        if is_prog "$f"; then
+            dprint "Determined $f is a program"
+            proglist+=("${f#*"${destdir}"}")
+        fi
+    done
+
+    if [ "${#proglist[@]}" -gt 0 ]; then
+        printf "%s\n" "${proglist[@]}" | sort
+    fi
+}
+
+
+# = Collects firmware into an array
+#
+# This function collects all firmware (as defined in `is_firm()`) in
+# `${contents[@]}`.
+#
+# == Returns
+# A sorted array of unformatted firmware files
+collect_firm() {
+    local destdir="${1:?}" && shift
+    local contents=("$@")
+    local firmlist
+    local IFS=$'\n'
+
+    firmlist=()
+    for f in "${contents[@]}"; do
+        if is_firm "$f"; then
+            firmlist+=("${f#*"${destdir}"}")
+        fi
+    done
+
+    if [ "${#firmlist[@]}" -gt 0 ]; then
+        printf "%s\n" "${firmlist[@]}" | sort
+    fi
+}
+
+
+# = Format generically for display in the docstub
+#
+# This function takes a file as input and formats it. A formatted file is its
+# basename. Links are mentioned in parentheses.
+format_generic() {
+    local original
+    original="$(readlink "$1")"
+    local file="${1##*/}"
+
+    original="${original##*/}"
+    printf "%s" "$file"
+    [ -n "$original" ] && printf " (link to %s)" "$original"
+}
+
+
+# = Format a library for display in the docstub
+#
+# This function takes a library as input and formats it according to its type. A
+# formatted library is the basename of a library, without its extension, with
+# its type in parentheses if not a shared library.
+format_library() {
+    local lib="${1##*/}"
+    case "$lib" in
+        *.a)   printf "%s (static)"       "${lib%.a}"   ;;
+        *.so*) printf "%s"                "${lib%.so*}" ;;
+        *.jar) printf "%s (Java library)" "${lib%.jar}" ;;
+        *.dll) printf "%s (DLL)"          "${lib%.dll}" ;;
+        *)     printf "%s"                "$lib"        ;;
+    esac
+}
+
+
+# = Format a library for display in the short descriptions section
+#
+# This effectively just prints the library without its extension
+format_library_simple() {
+    local lib="${1##*/}"
+    case "$lib" in
+        *.a)   printf "%s" "${lib%.a}"   ;;
+        *.so*) printf "%s" "${lib%.so*}" ;;
+        *.jar) printf "%s" "${lib%.jar}" ;;
+        *.dll) printf "%s" "${lib%.dll}" ;;
+        *)     printf "%s" "$lib"        ;;
+    esac
+}
+
+
+# = Format the end of a new-line delimited list with commas and an 'and'
+#
+# Replaces ',' with ', and' on the second to last line. Removes ',' on the final
+# line.
+format_list_end() {
+    sed -e 'x; ${s/,/, and/;p;x}; 1d' -e '$s/,//'
+}
+
+
+# = Formats all libraries
+#
+# This function takes an array, formats each individual library, prints it on
+# its own line, intersperses commas, and adds an "and"
+format_all_libraries() {
+    case "$#" in
+        0 ) printf "          None\n" ;;
+        1 ) printf "          %s\n" "$(format_library "$1")" ;;
+        2 )
+            printf "          %s and\n" "$(format_library "$1")"
+            printf "          %s\n" "$(format_library "$2")"
+        ;;
+        * )
+            for name in "$@"; do
+                printf "          %s,\n" "$(format_library "$name")"
+            done | format_list_end
+        ;;
+    esac
+}
+
+
+# = Format a program for display in the docstub
+#
+# This function takes a program as input and formats it. A formatted program is
+# its basename. Links are mentioned in parentheses.
+format_program() {
+    format_generic "$1"
+}
+
+
+# = Formats all programs
+#
+# This function takes an array, formats each individual program, prints it on
+# its own line, intersperses commas, and adds an "and"
+format_all_programs() {
+    case "$#" in
+        0 ) printf "          None\n" ;;
+        1 ) printf "          %s\n" "$(format_program "$1")" ;;
+        2 )
+            printf "          %s and\n" "$(format_program "$1")"
+            printf "          %s\n" "$(format_program "$2")"
+        ;;
+        * )
+            for name in "$@"; do
+                printf "          %s,\n" "$(format_program "$name")"
+            done | format_list_end
+        ;;
+    esac
+}
+
+
+# = Format firmware for display in the docstub
+#
+# This function takes firmware as input and formats it. A formatted firmware
+# file is its basename. Links are mentioned in parentheses.
+format_firmware() {
+    format_generic "$1"
+}
+
+
+# = Formats all firmware
+#
+# This function takes an array, formats each individual firmware, prints it on
+# its own line, intersperses commas, and adds an "and"
+format_all_firmware() {
+    case "$#" in
+        0 ) printf "          None\n" ;;
+        1 ) printf "          %s\n" "$(format_firmware "$1")" ;;
+        2 )
+            printf "          %s and\n" "$(format_firmware "$1")"
+            printf "          %s\n" "$(format_firmware "$2")"
+        ;;
+        * )
+            for name in "$@"; do
+                printf "          %s,\n" "$(format_firmware "$name")"
+            done | format_list_end
+        ;;
+    esac
+}
+
+
+# = Format a directory for display in the docstub
+#
+# This function does not account for links as they aren't detected by
+# `collect_dirs()` anyway.
+format_directory() {
+    printf "%s" "$1"
+}
+
+
+# = Formats all directories
+#
+# This function takes an array, formats each individual directory, prints it on
+# its own line, intersperses commas, and adds an "and"
+format_all_directories() {
+    case "$#" in
+        0 ) printf "          None\n" ;;
+        1 ) printf "          %s\n" "$(format_directory "$1")" ;;
+        2 )
+            printf "          %s and\n" "$(format_directory "$1")"
+            printf "          %s\n" "$(format_directory "$2")"
+        ;;
+        * )
+            for name in "$@"; do
+                printf "          %s,\n" "$(format_directory "$name")"
+            done | format_list_end
+        ;;
+    esac
+}
+
+# = End and begin a <seg> tag in XML
+segseg() {
+cat << EOF
+        </seg>
+        <seg>
+EOF
+}
+
+
+print_contents_header() {
+cat << EOF
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+EOF
+if [ ${#firmlist[@]} -gt 0 ]; then
+    dprint "Firmlist has ${#firmlist[@]} entries"
+cat << EOF
+      <segtitle>Installed Firmware</segtitle>
+EOF
+fi
+cat << EOF
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+EOF
+}
+
+
+# = Print the footer for the contents section
+print_contents_footer() {
+cat << EOF
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+EOF
+}
+
+
+# = Print the header for the short descriptions section
+print_shortdesc_header() {
+cat << EOF
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+EOF
+}
+
+
+# = Print the footer for the short descriptions section
+print_shortdesc_footer() {
+cat << EOF
+    </variablelist>
+
+EOF
+}
+
+
+# = Print the footer that ends the docstub
+print_docstub_footer() {
+cat << EOF
+  </sect2>
+
+</sect1>
+EOF
+}
+
+
+# = Print the templates for the descriptions of all programs
+describe_programs() {
+for prog in "${proglist[@]}"; do
+prog="${prog##*/}"
+
+id="$prog"
+[ "$id" == "${package:?}" ] && id+="-bin"
+
+cat << EOF
+      <varlistentry id="$id">
+        <term><command>$prog</command></term>
+        <listitem>
+          <para>
+            <!-- TODO: Description for $prog -->
+          </para>
+          <indexterm zone="$package $prog">
+            <primary sortas="b-$prog">$prog</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+EOF
+done
+}
+
+
+# = Print the templates for the descriptions of all libraries
+describe_libraries() {
+for lib in "${liblist[@]}"; do
+lib="$(format_library_simple "${lib##*/}")"
+
+id="$lib"
+[ "$id" == "${package:?}" ] && id+="-lib"
+
+cat << EOF
+      <varlistentry id="$id">
+        <term><filename class="libraryfile">$lib</filename></term>
+        <listitem>
+          <para>
+            <!-- TODO: Description for $lib -->
+          </para>
+          <indexterm zone="$package $lib">
+            <primary sortas="c-$lib">$lib</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+EOF
+done
+}
+
+
+print_version_reminder() {
+cat << EOF
+<!-- TODO: Check for hardcoded versions in docstub -->
+EOF
+}
+
+
+# = Main
+
+[ -n "${DOCSTUBGEN_DEBUG-}" ] && : # set -x
+
+for arg in "$@"; do
+    case "$arg" in
+        -h | --help ) usage ;;
+        -V | --version ) version ;;
+    esac
+done
+
+[ "$#" -lt 2 ] && usage
+
+package="$1"
+destdir="$2"
+
+readarray -t contents < <(collect_files "$destdir")
+
+dprint "Found contents: "
+is_debug && printf "%s\n" ${contents[@]} >&2
+
+# NOTE: `${contents[@]}` is a list of files; `collect_{progs,firm,libs}()` do not
+# account for directories.
+readarray -t dirlist < <(collect_dirs "$destdir")
+readarray -t proglist < <(collect_progs "$destdir" "${contents[@]}")
+readarray -t firmlist < <(collect_firm "$destdir" "${contents[@]}")
+readarray -t liblist < <(collect_libs "$destdir" "${contents[@]}")
+unset contents
+
+print_version_reminder
+print_contents_header
+
+format_all_programs ${proglist[@]} && segseg
+[ ${#firmlist[@]} -gt 0 ] && format_all_firmware ${firmlist[@]} && segseg
+format_all_libraries ${liblist[@]} && segseg
+format_all_directories ${dirlist[@]}
+
+print_contents_footer
+
+if [ "${#proglist[@]}" -eq 0 ] &&
+   [ "${#liblist[@]}"  -eq 0 ] &&
+   [ "${#firmlist[@]}" -eq 0 ]; then
+    print_docstub_footer
+    exit 0
+fi
+
+print_shortdesc_header
+
+describe_programs
+describe_libraries
+
+print_shortdesc_footer
+print_docstub_footer
