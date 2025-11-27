@@ -522,8 +522,12 @@ EOF
 describe_programs() {
 for prog in "${proglist[@]}"; do
 prog="${prog##*/}"
+
+id="$prog"
+[ "$id" == "${package:?}" ] && id+="-bin"
+
 cat << EOF
-      <varlistentry id="$prog">
+      <varlistentry id="$id">
         <term><command>$prog</command></term>
         <listitem>
           <para>
@@ -544,8 +548,12 @@ done
 describe_libraries() {
 for lib in "${liblist[@]}"; do
 lib="$(format_library_simple "${lib##*/}")"
+
+id="$lib"
+[ "$id" == "${package:?}" ] && id+="-lib"
+
 cat << EOF
-      <varlistentry id="$lib">
+      <varlistentry id="$id">
         <term><filename class="libraryfile">$lib</filename></term>
         <listitem>
           <para>
