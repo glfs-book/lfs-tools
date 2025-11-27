@@ -25,7 +25,7 @@
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="docstubgen-ng">
+      <varlistentry id="docstubgen-ng-bin">
         <term><command>docstubgen-ng</command></term>
         <listitem>
           <para>

@@ -30,7 +30,7 @@
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="curl">
+      <varlistentry id="curl-bin">
         <term><command>curl</command></term>
         <listitem>
           <para>

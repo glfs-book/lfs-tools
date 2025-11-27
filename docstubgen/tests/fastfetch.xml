@@ -27,7 +27,7 @@
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="fastfetch">
+      <varlistentry id="fastfetch-bin">
         <term><command>fastfetch</command></term>
         <listitem>
           <para>
