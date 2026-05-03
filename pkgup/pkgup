@@ -47,8 +47,13 @@ map_package() {
     to_pretty["$internal"]="$pretty"
 }
 
+# GLFS package mappings
+# TODO: Finish
+
+# SLFS package mappings
 map_package btop            BTOP++
 map_package tomlplusplus    toml++
+# TODO: Finish
 
 # given an issuespec, determine the book and issue number
 parse_issuespec() {
@@ -222,6 +227,9 @@ git_close() {
 parse_issuespec "$1"                # sets $book $issue
 query_github_api "$book" "$issue"   # sets $title
 parse_title "$title"                # sets $package $old $new
+
+# Set package mapping for most packages
+[[ -v to_internal["$package"] ]] || map_package "${package,,}" "$package"
 
 internal=$(get_internal_name "$package")
 pretty=$(get_pretty_name "$package")
