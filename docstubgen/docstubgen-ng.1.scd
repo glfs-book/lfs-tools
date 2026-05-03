@@ -69,8 +69,8 @@ https://github.com/glfs-book/lfs-tools/issues.
 
 # AUTHORS
 
-Docstubgen-ng is primarily maintained by tox <toxtek@proton.me>. The project is
-part of the lfs-tools repository hosted at++
+Docstubgen-ng is primarily maintained by tox <tox@tox.wtf>. The project is part
+of the lfs-tools repository hosted at++
 https://github.com/glfs-book/lfs-tools.
 
 The original docstubgen was authored by Seal Sealy <butilkama@gmail.com>.
