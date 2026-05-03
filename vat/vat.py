@@ -72,8 +72,8 @@ BUILTIN_ENTS = { "lt": "<", "gt": ">", "amp": "&" }
 ents = parse_ents(content)
 lfs_ents = expand_ents(ents | BUILTIN_ENTS)
 
-def lfs_ver(package):
-    return lfs_ents[f"{package}-version"]
+def lfs_ver(lfs_key_full):
+    return lfs_ents[f"{lfs_key_full}"]
 
 def is_commit(string):
     return len(string) == 40
@@ -84,15 +84,15 @@ def truncate_commit(string, length):
 
     return string
 
-def pkg(name, *, key=None, lfs_key=None, vat_key=None, channel="release", **overrides):
+def pkg(name, *, key=None, lfs_key=None, lfs_key_full=None, vat_key=None, channel="release", **overrides):
     key = key or name.lower()
-    lfs_key = lfs_key or key
     vat_key = vat_key or key
+    lfs_key_full = lfs_key_full or (lfs_key+"-version" if lfs_key else key+"-version")
 
     # FIXME: I think vat default execs non-lazily
     base = {
         "flag": "*",
-        "lfs": overrides.get("lfs", lfs_ver(lfs_key)),
+        "lfs": overrides.get("lfs", lfs_ver(lfs_key_full)),
         "vat": overrides.get("vat", data[vat_key][channel]),
     }
 
