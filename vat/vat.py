@@ -17,19 +17,19 @@ args = parser.parse_args()
 
 match args.book.lower():
     case "slfs":
-        packages_ent_link = "https://raw.githubusercontent.com/glfs-book/slfs/refs/heads/trunk/packages.ent"
+        packages_ent_link = "https://raw.githubusercontent.com/glfs-book/slfs/trunk/packages.ent"
     case "glfs":
-        packages_ent_link = "https://raw.githubusercontent.com/glfs-book/glfs/refs/heads/trunk/packages.ent"
+        packages_ent_link = "https://raw.githubusercontent.com/glfs-book/glfs/trunk/packages.ent"
     case "lfs":
-        packages_ent_link = "https://raw.githubusercontent.com/lfs-book/lfs/refs/heads/trunk/packages.ent"
+        packages_ent_link = "https://raw.githubusercontent.com/lfs-book/lfs/trunk/packages.ent"
     case "blfs":
-        packages_ent_link = "https://raw.githubusercontent.com/lfs-book/blfs/refs/heads/trunk/packages.ent"
+        packages_ent_link = "https://raw.githubusercontent.com/lfs-book/blfs/trunk/packages.ent"
     case _:
         print(f"unknown book: {args.book}")
         exit(1)
 
 content = requests.get(packages_ent_link).text
-data = json.loads(requests.get("https://raw.githubusercontent.com/tox-wtf/vat/refs/heads/master/p/ALL.json").text)
+data = json.loads(requests.get("https://raw.githubusercontent.com/tox-wtf/vat/master/p/ALL.json").text)
 
 def parse_ents(haystack):
     return { k.lower(): v for k, v in dict(entity_pattern.findall(haystack)).items() }
