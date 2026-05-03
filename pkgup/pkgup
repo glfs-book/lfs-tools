@@ -1,0 +1,247 @@
+#!/usr/bin/env bash
+#
+# = Summary
+# Script to automate scriptable tasks in package updates in SLFS and GLFS based
+# on GitHub issues.
+#
+# The scriptable tasks pkgup performs are as follows:
+# - Sync with upstream
+# - Checkout to a new branch
+# - Update package version in packages.ent
+# - Generate changelog entry
+# - Generate commit message
+# - Push changes to upstream
+# - Open the pull request page
+#
+# = Usage
+# Example invocations:
+# $ pkgup https://github.com/glfs-book/slfs/issues/674
+# $ pkgup glfs-book/slfs/issues/674
+# $ pkgup slfs/issues/674
+# $ pkgup slfs/674
+# $ pkgup 674
+
+CHANGELOG="introduction/welcome/changelog.xml"
+
+set -uo pipefail
+
+die() {
+    echo "$0: $1" && exit "${2:-1}"
+}
+
+for prog in jq curl git; do
+    $prog --version &>/dev/null || die "missing $prog" 2
+done
+
+[[ $PWD = */[gs]lfs ]] || die "please run $0 from the book's source directory" 2
+
+# Bidirectional internal <--> pretty package name maps to be used with
+# `get_internal_name`, `get_pretty_name`, and `map_package`
+declare -A to_internal
+declare -A to_pretty
+map_package() {
+    local internal pretty
+    internal="$1"
+    pretty="$2"
+    to_internal["$pretty"]="$internal"
+    to_pretty["$internal"]="$pretty"
+}
+
+map_package btop            BTOP++
+map_package tomlplusplus    toml++
+
+# given an issuespec, determine the book and issue number
+parse_issuespec() {
+    local tmp
+
+    case "$1" in
+        http?://github.com/?lfs-book/?lfs/issues/*)
+            tmp="${1#http?://github.com/?lfs-book/}"
+            book="${tmp%%/*}"
+            issue="${tmp#*/issues/}"; issue="${issue%%/*}"
+        ;;
+        ?lfs-book/?lfs/issues/*)
+            tmp="${1#?lfs-book/}"
+            book="${tmp%%/*}"
+            issue="${tmp#*/issues/}"; issue="${issue%%/*}"
+        ;;
+        ?lfs/issues/*)
+            book="${1%%/*}"
+            issue="${1#*/issues/}"; issue="${issue%%/*}"
+        ;;
+        ?lfs/*)
+            book="${1%%/*}"
+            issue="${1#"$book"/}"
+        ;;
+        [0-9]*)
+            book="${PWD##*/}"
+            issue="$1"
+        ;;
+    esac
+
+    [[ $book$issue =~ ^[sg]lfs[0-9]+$ ]] || die "unexpected issuespec: $book $issue" 2
+    [[ $book = "${PWD##*/}" ]] || die "issue references $book, but we're in $PWD" 2
+}
+
+# given the book and issue, query the github api
+query_github_api() {
+    local tmpfile
+
+    tmpfile="$(mktemp -u)"
+    curl -fsSL "https://api.github.com/repos/glfs-book/$1/issues/$2" |
+        install -Dm644 /dev/stdin "$tmpfile"
+
+    title="$(jq -r .title < "$tmpfile")"
+    rm -f "$tmpfile"
+}
+
+# get a package's internal name from its pretty name
+get_internal_name() {
+    [[ -v to_internal["$1"] ]] && echo "${to_internal["$1"]}" || echo "$1"
+}
+
+# get a package's pretty name from its internal name
+get_pretty_name() {
+    [[ -v to_pretty["$1"] ]] && echo "${to_pretty["$1"]}" || echo "$1"
+}
+
+# parse a github issue title for updating a package
+parse_title() {
+    package="${1%:*}" # usually the pretty name
+    old="${1#*:}"; old="${old%->*}"; old="${old// /}"
+    new="${1#*->}"; new="${new// /}"
+}
+
+# print today's date
+get_date() {
+    local _date suffix
+    _date=$(date +%-d)
+    case $_date in
+        *1) suffix=st ;;
+        *2) suffix=nd ;;
+        *3) suffix=rd ;;
+        *)  suffix=th ;;
+    esac
+
+    date +"%B $_date$suffix, %Y"
+}
+
+# updates the version of $1 in packages.ent
+update_package_version() {
+    line=$(grep -Fnm1 "<!ENTITY $internal-version" packages.ent); line="${line%%:*}"
+    [[ -n ${line:-} ]] || die "no $internal-version entity in packages.ent"
+
+    sed -i "${line}s/\"$old\">/\"$new\">/" packages.ent
+}
+
+# generate an incomplete changelog entry
+generate_changelog_entry() {
+    author="$(git config get user.name)"
+
+    read -rd '' entry << EOF
+            <listitem>
+          <para>[$author] - $pretty: $old -&gt; $new. Fixes
+          <ulink url="&$book-issues;/$issue">#$issue</ulink>.</para>
+        </listitem>
+EOF
+}
+
+write_changelog() {
+    local line tmpfile date
+
+    date="$(get_date)"
+    line=$(grep -Fnm1 "$date" "$CHANGELOG"); line="${line%%:*}"
+    tmpfile="$(mktemp -u)"
+
+    if [[ -n ${line:-} ]]; then
+        # Append an entry to today's changes
+        {
+            head -n  $((line + 1)) "$CHANGELOG"
+            cat << EOF
+        $entry
+EOF
+            tail -n +$((line + 2)) "$CHANGELOG"
+        } >> "$tmpfile"
+    else
+        # Generate an entry for a new day
+        line=$(grep -Fnm1 "<title>Changelog Entries:</title>" "$CHANGELOG"); line="${line%%:*}"
+        {
+            head -n  $((line + 16)) "$CHANGELOG"
+            cat << EOF
+    <listitem>
+      <para>$date</para>
+      <itemizedlist>
+        $entry
+      </itemizedlist>
+    </listitem>
+
+EOF
+            tail -n +$((line + 17)) "$CHANGELOG"
+        } >> "$tmpfile"
+    fi
+
+    mv -f "$tmpfile" "$CHANGELOG"
+    rm -f "$tmpfile"
+}
+
+# Open a new branch and stuff
+git_open() {
+    git remote get-url pkgup-upstream &>/dev/null ||
+        git remote add pkgup-upstream "https://github.com/glfs-book/$book.git"
+
+    git checkout -b "$internal"
+    git fetch pkgup-upstream
+    git reset --hard pkgup-upstream/trunk
+    git clean -fd
+}
+
+# Interactive loop for further changes
+interactive_loop() {
+    local envfile
+    envfile=$(mktemp -ut pkgup-XXXX.env)
+
+    cat << EOF > "$envfile"
+. ~/.bashrc
+
+PS1=" (pkgup) \$PS1"
+cd "$PWD"
+EOF
+
+    bash --init-file "$envfile"
+}
+
+# Commit and push changes
+git_close() {
+    git add .
+    git commit -em "$pretty: $old -> $new. Fixes #$issue"
+    url=$(git push -u origin "$internal" |& grep -F "remote:      https://github.com/"); url="${url#remote:      }"
+    xdg-open "$url"
+}
+
+# = Main
+parse_issuespec "$1"                # sets $book $issue
+query_github_api "$book" "$issue"   # sets $title
+parse_title "$title"                # sets $package $old $new
+
+internal=$(get_internal_name "$package")
+pretty=$(get_pretty_name "$package")
+
+# Initialize git environment
+git_open
+
+# Modify packages.ent
+update_package_version
+
+# Generate changelog entry
+generate_changelog_entry            # sets $author
+
+# Write changelog
+write_changelog
+
+# Enter interactive loop
+interactive_loop
+
+# Commit and push changes
+git_close
+
+# vi: set ts=4 sw=4 tw=0 ft=bash :
