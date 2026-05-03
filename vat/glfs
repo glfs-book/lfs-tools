@@ -212,7 +212,7 @@ packages = (
     # | pkg("MinGW-w64")
 
     # 21. Miscellaneous
-    | pkg("libxkbcommon")
+    | pkg("libxkbcommon", lfs_key_full="libxkbcommon-real")
     | pkg("SDL3", vat_key="sdl")
     | pkg("sdl2-compat", lfs_key="sdl2")
 
