@@ -69,8 +69,23 @@ def expand_ents(ents):
 
 BUILTIN_ENTS = { "lt": "<", "gt": ">", "amp": "&" }
 
+# Ents used in lfs/packages.ent
+# These are defined to avoid errors but we don't care about them
+COMPAT_ENTS = {"savannah": "",
+               "savannah-nongnu": "",
+               "gnu": "",
+               "gnu-software": "",
+               "github": "",
+               "sourceforge": "",
+               "pypi-src": "",
+               "pypi-home": "",
+               "kernel": "",
+               "downloads-root": "",
+               "anduin-sources": "",
+              }
+
 ents = parse_ents(content)
-lfs_ents = expand_ents(ents | BUILTIN_ENTS)
+lfs_ents = expand_ents(ents | BUILTIN_ENTS | COMPAT_ENTS)
 
 def lfs_ver(lfs_key_full):
     return lfs_ents[f"{lfs_key_full}"]
