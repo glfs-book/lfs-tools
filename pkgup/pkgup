@@ -26,7 +26,15 @@ CHANGELOG="introduction/welcome/changelog.xml"
 set -uo pipefail
 
 die() {
-    echo "$0: $1" && exit "${2:-1}"
+    echo "pkgup: $1" >&2 && exit "${2:-1}"
+}
+
+warn() {
+    echo "pkgup: $1" >&2
+}
+
+debug() {
+    [[ -n $DEBUG ]] && echo "pkgup (debug): $1" >&2
 }
 
 for prog in jq curl git; do
