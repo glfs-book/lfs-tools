@@ -142,10 +142,22 @@ get_date() {
 
 # updates the version of $1 in packages.ent
 update_package_version() {
+    local before_sha after_sha
     line=$(grep -Fnm1 "<!ENTITY $internal-version" packages.ent); line="${line%%:*}"
-    [[ -n ${line:-} ]] || die "no $internal-version entity in packages.ent"
+    if [[ -z ${line:-} ]]; then
+        debug "no $internal-version entity in packages.ent"
+        warn 'please manually edit packages.ent!'
+        return
+    fi
 
+    before_sha=$(sha256sum packages.ent | cut -d\  -f1)
     sed -i "${line}s/\"$old\">/\"$new\">/" packages.ent
+    after_sha=$(sha256sum packages.ent | cut -d\  -f1)
+
+    if [[ $before_sha = $after_sha ]]; then
+        debug "sed made no changes"
+        warn 'please manually edit packages.ent!'
+    fi
 }
 
 # generate an incomplete changelog entry
