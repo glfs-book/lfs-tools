@@ -227,7 +227,7 @@ interactive_loop() {
     envfile=$(mktemp -ut pkgup-XXXX.env)
 
     cat << EOF > "$envfile"
-. ~/.bashrc
+[[ -r ~/.bashrc ]] && . ~/.bashrc
 
 PS1=" (pkgup) \$PS1"
 cd "$PWD"
