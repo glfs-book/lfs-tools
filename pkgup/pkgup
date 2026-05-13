@@ -122,10 +122,11 @@ get_date() {
     local _date suffix
     _date=$(date +%-d)
     case $_date in
-        *1) suffix=st ;;
-        *2) suffix=nd ;;
-        *3) suffix=rd ;;
-        *)  suffix=th ;;
+        1[123]) suffix=th ;;
+        *1)     suffix=st ;;
+        *2)     suffix=nd ;;
+        *3)     suffix=rd ;;
+        *)      suffix=th ;;
     esac
 
     date +"%B $_date$suffix, %Y"
