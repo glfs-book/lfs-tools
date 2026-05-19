@@ -157,6 +157,7 @@ packages = (
     | pkg("toml++", key="tomlplusplus")
     | pkg("tornado", vat_key="python/tornado")
     | pkg("tmux")
+    | pkg("typst")
     | pkg("uthash")
     | pkg("W3m")
     | pkg("wf-config")
