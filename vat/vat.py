@@ -32,7 +32,7 @@ content = requests.get(packages_ent_link).text
 data = json.loads(requests.get("https://raw.githubusercontent.com/tox-wtf/vat/master/p/ALL.json").text)
 
 def parse_ents(haystack):
-    return { k.lower(): v for k, v in dict(entity_pattern.findall(haystack)).items() }
+    return { k: v for k, v in dict(entity_pattern.findall(haystack)).items() }
 
 def expand_ents(ents):
     resolved = {}
@@ -65,7 +65,7 @@ def expand_ents(ents):
     for name in ents:
         resolve(name)
 
-    return resolved
+    return { k.lower(): v for k,v in resolved.items() }
 
 BUILTIN_ENTS = { "lt": "<", "gt": ">", "amp": "&" }
 
