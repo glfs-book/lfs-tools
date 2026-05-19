@@ -228,6 +228,80 @@ packages = (
     # Hardware Utilities
 
     # 13. Programming
+
+    # 15. Networking Programs
+
+    # 16. Networking Utilities
+
+    # 17. Networking Libraries
+
+    # 18. Text Web Browsers
+
+    # 19. Mail/News Clients
+
+    # 20. Major Servers
+
+    # 21. Mail Servers
+
+    # 22. Databases
+
+    # 23. Other Server Software
+
+    # 24. Graphical Environments
+
+    # 25. Graphical Environment Libraries
+
+    # 26. Display Managers
+
+    # 27. Window Managers
+
+    # 28. Icons
+
+    # 29. Introduction to KDE
+
+    # 30. KDE Frameworks 6
+
+    # 31. KDE Frameworks 6 Based Applications
+
+    # 32. KDE Plasma
+
+    # 33. GNOME Libraries and Desktop
+
+    # 34. GNOME Applications
+
+    # 35. Xfce Desktop
+
+    # 36. Xfce Applications
+
+    # 37. LXQt Desktop
+
+    # 38. LXQt Applications
+
+    # 39. Office Programs
+
+    # 40. Graphical Web Browsers
+
+    # 41. Other X-based Programs
+
+    # 42. Multimedia Libraries and Drivers
+
+    # 43. Audio Utilities
+
+    # 44. Video Utilities
+
+    # 45. CD/DVD-Writing Utilities
+
+    # 46. Printing
+
+    # 47. Scanning
+
+    # 48. SGML
+
+    # 49. XML
+
+    # 50. PostScript
+
+    # 51. Typesetting
 )
 
 # vi: ft=python :
