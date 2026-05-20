@@ -34,7 +34,7 @@ warn() {
 }
 
 debug() {
-    [[ -n $DEBUG ]] && echo "pkgup (debug): $1" >&2
+    [[ -n ${DEBUG-} ]] && echo "pkgup (debug): $1" >&2
 }
 
 for prog in jq curl git; do
