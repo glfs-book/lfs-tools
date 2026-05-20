@@ -243,6 +243,7 @@ git_close() {
     git commit -em "$pretty: $old -> $new. Fixes #$issue"
     url=$(git push -u origin "$internal" |& grep -F "remote:      https://github.com/"); url="${url#remote:      }"
     [[ -n $url ]] && xdg-open "$url"
+    git checkout trunk
 }
 
 # = Main
