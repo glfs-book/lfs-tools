@@ -61,6 +61,7 @@ map_package() {
 # SLFS package mappings
 map_package btop            BTOP++
 map_package tomlplusplus    toml++
+map_package sdbus-cpp       sdbus-c++
 # TODO: Finish
 
 # given an issuespec, determine the book and issue number
