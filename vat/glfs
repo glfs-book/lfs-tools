@@ -34,7 +34,7 @@ packages = (
     | pkg("Cython")
     | pkg("libyaml", lfs_key="yaml")
     | pkg("PyYAML", vat_key="python/pyyaml")
-    | pkg("Ruby")
+    # | pkg("Ruby") # archived
 
     # 7. Audio
     | pkg("alsa-lib")
@@ -122,8 +122,7 @@ packages = (
     | pkg("libgbm")
     | pkg("libva")
     | pkg("Mesa")
-    | pkg("OpenCL-Headers", lfs_key="ocl-headers")
-    | pkg("OCL-ICD")
+    | pkg("OpenCL-SDK", lfs_key="opencl", vat_key="opencl-headers")
     | pkg("libclc", vat_key="llvm") # TODO: Do we want this?
 
     # 11. Graphics Drivers - Preliminaries
