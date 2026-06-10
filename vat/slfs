@@ -130,6 +130,7 @@ packages = (
     | pkg("QR-Code-generator", lfs_key="qrcodegencpp")
     | pkg("QuaZip")
     | pkg("re2", vat=data["re2"]["release"].replace(".", "-"))
+    | pkg("ripgrep")
     | pkg("Rofi")
     | pkg("rpmextract")
     | pkg("rubberband")
