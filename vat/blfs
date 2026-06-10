@@ -1,0 +1,307 @@
+packages = (
+    # 4. Security
+    pkg("make-ca")
+    | pkg("cracklib")
+    | pkg("cryptsetup")
+    | pkg("cyrus-sasl")
+    | pkg("gnupg", lfs_key="gnupg2")
+    | pkg("gnutls")
+    | pkg("gpgme")
+    | pkg("gpgmepp")
+    | pkg("iptables")
+    | pkg("libcap")
+    | pkg("linux-pam")
+    | pkg("liboauth")
+    | pkg("libpwquality")
+    | pkg("krb5", lfs_key="mitkrb")
+    | pkg("nettle")
+    | pkg("nss")
+    | pkg("openssh")
+    | pkg("p11-kit")
+    | pkg("polkit")
+    | pkg("polkit-gnome")
+    | pkg("shadow")
+    | pkg("ssh-askpass", vat_key="openssh")
+    | pkg("stunnel")
+    | pkg("sudo")
+    | pkg("tripwire")
+
+    # 5. Filesystems and Disk Management
+    | pkg("btrfs-progs")
+    | pkg("dosfstools")
+    | pkg("fuse3", vat_key="libfuse")
+    | pkg("jfsutils")
+    | pkg("lvm2")
+    | pkg("mdadm")
+    | pkg("ntfs-3g")
+    | pkg("gptfdisk")
+    | pkg("parted")
+    # | pkg("reiser", vat_key="reiserfs") # archived
+    | pkg("smartmontools")
+    | pkg("sshfs")
+    | pkg("xfsprogs")
+
+    # UEFI bootloaders
+    | pkg("efivar")
+    | pkg("efibootmgr")
+    | pkg("grub")
+    # | pkg("unifont") # archived
+
+    # 6. Text Editors
+    | pkg("bluefish")
+    | pkg("ed")
+    | pkg("emacs")
+    | pkg("gedit")
+    | pkg("joe")
+    | pkg("mousepad")
+    | pkg("nano")
+    | pkg("vim")
+
+    # 7. Shells
+    | pkg("dash")
+    | pkg("tcsh")
+    | pkg("zsh")
+
+    # 8. Virtualization
+    | pkg("qemu")
+
+    # 9. General Libraries
+    | pkg("abseil-cpp")
+    | pkg("appstream")
+    | pkg("appstream-glib")
+    | pkg("apr")
+    | pkg("apr-util")
+    | pkg("aspell")
+    | pkg("boost")
+    | pkg("brotli")
+    | pkg("clucene")
+    | pkg("dbus-glib")
+    | pkg("double-conversion")
+    | pkg("duktape")
+    | pkg("enchant")
+    | pkg("exempi")
+    | pkg("fast_float")
+    | pkg("fftw")
+    | pkg("fmt")
+    | pkg("glib", lfs_key="glib2")
+    | pkg("glibmm", lfs_key="glibmm2") # TODO: Handle lfs's glibmm?
+    | pkg("gmime", lfs_key="gmime3")
+    # | pkg("gobject-introspection") # TODO: Uncomment
+    | pkg("gsl")
+    | pkg("gspell")
+    | pkg("highway")
+    | pkg("icu")
+    | pkg("inih")
+    | pkg("gmmlib", lfs_key="intel-gmmlib")
+    | pkg("jansson")
+    | pkg("json-c")
+    | pkg("json-glib")
+    | pkg("keyutils")
+    | pkg("libaio")
+    | pkg("libarchive")
+    | pkg("libassuan")
+    | pkg("libatasmart")
+    | pkg("libatomic_ops")
+    | pkg("libblockdev")
+    | pkg("libbytesize")
+    | pkg("libcloudproviders")
+    | pkg("libdaemon")
+    | pkg("libdisplay-info")
+    | pkg("libgcrypt")
+    | pkg("libgpg-error")
+    # | pkg("libgrss") # archived
+    | pkg("libgsf")
+    | pkg("libgudev")
+    | pkg("libical")
+    | pkg("libidn")
+    | pkg("libidn2")
+    # | pkg("libiodbc") # archived
+    | pkg("libksba")
+    | pkg("liblinear")
+    | pkg("libnvme")
+    | pkg("libmbim")
+    | pkg("libpaper")
+    | pkg("libportal")
+    | pkg("libproxy")
+    | pkg("libptytty")
+    | pkg("libqalculate")
+    | pkg("libqmi")
+    | pkg("libseccomp")
+    | pkg("libsigc2", lfs_key="libsigc", vat_key="libsigcplusplus", channel="2")
+    | pkg("libsigc3", lfs_key="libsigc3", vat_key="libsigcplusplus", channel="3")
+    | pkg("libsigsegv")
+    | pkg("libssh2")
+    | pkg("libstatgrab")
+    | pkg("libtasn1")
+    # | pkg("libunique") # archived
+    | pkg("libunistring")
+    | pkg("libunwind")
+    | pkg("liburcu")
+    | pkg("libusb")
+    | pkg("libuv")
+    | pkg("libxkbcommon")
+    | pkg("libxml2")
+    | pkg("libxmlb")
+    | pkg("libxslt")
+    | pkg("libwacom")
+    # | pkg("libwpe") # archived
+    | pkg("libyaml", lfs_key="yaml")
+    | pkg("libfyaml")
+    | pkg("log4cplus")
+    | pkg("lzo")
+    | pkg("mtdev")
+    | pkg("nodejs")
+    | pkg("npth")
+    | pkg("nspr")
+    | pkg("pcre2")
+    | pkg("popt")
+    | pkg("protobuf")
+    # | pkg("pth") # archived
+    | pkg("qca")
+    | pkg("qcoro")
+    | pkg("simdutf")
+    | pkg("spirv-headers", channel="sdk")
+    | pkg("spirv-tools", channel="sdk")
+    | pkg("spirv-llvm-translator")
+    | pkg("talloc")
+    # | pkg("telepathy-glib") # archived
+    | pkg("uchardet")
+    | pkg("umockdev")
+    | pkg("utfcpp")
+    | pkg("wayland")
+    | pkg("wayland-protocols")
+    # | pkg("wpebackend-fdo") # archived
+    | pkg("wv")
+    | pkg("xapian")
+
+    # 10. Graphics and Font Libraries
+    | pkg("aalib")
+    | pkg("babl")
+    | pkg("cargo-c")
+    | pkg("exiv2")
+    | pkg("freetype", lfs_key="freetype2")
+    | pkg("fontconfig")
+    | pkg("fribidi")
+    | pkg("gegl")
+    | pkg("giflib")
+    | pkg("glad")
+    | pkg("glm")
+    | pkg("glycin")
+    | pkg("graphite", lfs_key="graphite2")
+    | pkg("harfbuzz")
+    | pkg("jasper")
+    | pkg("lcms2", vat_key="little-cms")
+    | pkg("libavif")
+    | pkg("libexif")
+    | pkg("libheif")
+    | pkg("libgxps")
+    | pkg("libjpeg-turbo")
+    | pkg("libjxl")
+    | pkg("libmng")
+    | pkg("libmypaint")
+    | pkg("libpng")
+    | pkg("libraw")
+    | pkg("librsvg")
+    | pkg("libspiro")
+    | pkg("libtiff")
+    | pkg("libwebp")
+    | pkg("mypaint-brushes")
+    | pkg("newt")
+    | pkg("opencv")
+    # | pkg("opencv-contrib") # TODO: If this is ever out of sync with opencv, I'll add it to vat
+    | pkg("openjpeg", lfs_key="openjpeg2")
+    | pkg("pixman")
+    | pkg("poppler")
+    | pkg("potrace")
+    | pkg("qpdf")
+    | pkg("libqrencode", lfs_key="qrencode")
+    | pkg("libsass")
+    | pkg("sassc")
+    # | pkg("webp-pixbuf-loader") # archived
+    | pkg("woff2")
+    | pkg("zxing-cpp")
+
+    # 11. General Utilities
+
+    # 12. System Utilities
+
+    # Hardware Utilities
+
+    # 13. Programming
+
+    # 15. Networking Programs
+
+    # 16. Networking Utilities
+
+    # 17. Networking Libraries
+
+    # 18. Text Web Browsers
+
+    # 19. Mail/News Clients
+
+    # 20. Major Servers
+
+    # 21. Mail Servers
+
+    # 22. Databases
+
+    # 23. Other Server Software
+
+    # 24. Graphical Environments
+
+    # 25. Graphical Environment Libraries
+
+    # 26. Display Managers
+
+    # 27. Window Managers
+
+    # 28. Icons
+
+    # 29. Introduction to KDE
+
+    # 30. KDE Frameworks 6
+
+    # 31. KDE Frameworks 6 Based Applications
+
+    # 32. KDE Plasma
+
+    # 33. GNOME Libraries and Desktop
+
+    # 34. GNOME Applications
+
+    # 35. Xfce Desktop
+
+    # 36. Xfce Applications
+
+    # 37. LXQt Desktop
+
+    # 38. LXQt Applications
+
+    # 39. Office Programs
+
+    # 40. Graphical Web Browsers
+
+    # 41. Other X-based Programs
+
+    # 42. Multimedia Libraries and Drivers
+
+    # 43. Audio Utilities
+
+    # 44. Video Utilities
+
+    # 45. CD/DVD-Writing Utilities
+
+    # 46. Printing
+
+    # 47. Scanning
+
+    # 48. SGML
+
+    # 49. XML
+
+    # 50. PostScript
+
+    # 51. Typesetting
+)
+
+# vi: ft=python :
