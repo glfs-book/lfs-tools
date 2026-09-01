@@ -103,7 +103,7 @@ packages = (
     | pkg("minicom")
     | pkg("mGBA", channel="commit")
     | pkg("mksh", vat="R"+data["mksh"]["release"])
-    | pkg("monero")
+    | pkg("Monero")
     | pkg("Motif")
     | pkg("msgraph")
     | pkg("Mtools")
