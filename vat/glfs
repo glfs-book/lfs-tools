@@ -123,7 +123,6 @@ packages = (
     | pkg("libva")
     | pkg("Mesa")
     | pkg("OpenCL-SDK", lfs_key="opencl", vat_key="opencl-headers")
-    | pkg("libclc", vat_key="llvm") # TODO: Do we want this?
 
     # 11. Graphics Drivers - Preliminaries
     | pkg("pciutils")
